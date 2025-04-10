@@ -1,0 +1,102 @@
+# Mcollect Web Manager Lib (`mcollecte-web-manager-lib`)
+
+[![npm version](https://badge.fury.io/js/mcollecte-web-manager-lib.svg)](https://badge.fury.io/js/mcollecte-web-manager-lib)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Une bibliothèque TypeScript pour interagir avec l'API publique du système Mcollecte. Cette bibliothèque fournit des méthodes pratiques pour récupérer les informations du site, les articles de blog, les catégories, et les blocs de contenu utilisés dans les sites alimentés par Mcollecte.
+
+## Fonctionnalités
+
+- Récupération des informations générales du site web.
+- Récupération de la liste des catégories de blog.
+- Récupération des articles de blog (tous ou par catégorie).
+- Récupération d’un article de blog via son URL (slug), avec les articles similaires.
+- Récupération de blocs de contenu personnalisés (blocs).
+- Consultation d’un bloc spécifique via son ID (après initialisation).
+- Réponses typées avec TypeScript.
+
+## Installation
+
+```bash
+npm install mcollecte-web-manager-lib
+```
+
+ou
+
+```bash
+yarn add mcollecte-web-manager-lib
+```
+
+## Configuration
+
+Cette bibliothèque utilise un `SITE_TOKEN` pour identifier l'instance du site Mcollecte à interroger.
+
+> ⚠️ Actuellement, ce `SITE_TOKEN` est importé automatiquement depuis `./utils/constant` à l’intérieur de la bibliothèque. Une future amélioration envisagée est de permettre de le passer via les paramètres du constructeur ou une méthode dédiée.
+
+## Utilisation
+
+```ts
+import McollectWebManagerLib from 'mcollecte-web-manager-lib';
+
+async function main() {
+    const manager = new McollectWebManagerLib();
+    await manager.initialize();
+
+    const siteInfo = await manager.getWebInfo();
+    console.log(siteInfo);
+
+    const blogDetail = await manager.getBlogByUrl("exemple-de-slug");
+    console.log(blogDetail);
+
+    const blogsByCategory = await manager.getBlogsByCategory("category-id");
+    console.log(blogsByCategory);
+
+    const bloc = await manager.getBlocById("bloc-id");
+    console.log(bloc);
+}
+```
+
+## API
+
+| Méthode | Description |
+|--------|-------------|
+| `initialize()` | Prépare la bibliothèque (nécessaire pour certains appels comme `getBlocById`). |
+| `getWebInfo()` | Récupère les informations du site. |
+| `getBlogsCategory()` | Récupère les catégories de blog disponibles. |
+| `getBlogs()` | Récupère les blogs publiés. |
+| `getBlogByUrl(blogUrl: string)` | Récupère un blog via son slug + suggestions. |
+| `getBlogsByCategory(categoryId: string)` | Blogs d'une catégorie spécifique. |
+| `getBlocById(id: string)` | Récupère un bloc via son ID. Nécessite `initialize()`. |
+
+## Types TypeScript fournis
+
+- `ISiteInfos`
+- `IBlogCategoryResponse`
+- `BlogPost`
+- `BlogApiResponse`
+- `BlogByUrlResponse`
+- `BlocItem`
+- `BlocApiResponse`
+- `CategoryDetail`
+- `BlocText`
+
+Import exemple :
+
+```ts
+import { ISiteInfos } from 'mcollecte-web-manager-lib/dist/utils/types';
+```
+
+---
+
+## À propos du concepteur
+
+Ce projet a été conçu et développé par **Willson Vulembere Antoine**, ingénieur en informatique passionné par les technologies communautaires, l'agriculture et les systèmes numériques durables. Willson est spécialisé dans le développement backend, les architectures distribuées, et la conception de solutions technologiques pour des environnements à faible connectivité.
+
+GitHub : [@willsonantoine](https://github.com/willsonantoine)  
+Projet : [mcollecte-web-manager-lib](https://github.com/willsonantoine/mcollecte-web-manager-lib)
+
+---
+
+## Licence
+
+Ce projet est sous licence [MIT](https://opensource.org/licenses/MIT) – vous pouvez l’utiliser librement dans vos projets personnels ou commerciaux.
