@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { URL_API } from './constant';
 
 export type ResponseApiType = {
     status: boolean;
@@ -9,23 +8,25 @@ export type ResponseApiType = {
 };
 
 export const HttpRequest = async ({
+    api_url,
     method,
     route,
 }: {
+    api_url: string
     route: string;
     method: 'POST' | 'GET' | 'PUT' | 'DELETE';
 }): Promise<ResponseApiType> => {
     const config = {
         method,
         maxBodyLength: Infinity,
-        url: `${URL_API}/public${route}`,
+        url: `${api_url}/public${route}`,
     };
 
     try {
         const result: any = await axios.request(config);
- 
+
         return {
-            status: true, 
+            status: true,
             message: result.data?.message || 'Requête réussie',
             code: result.status,
             data: result.data?.data || {},

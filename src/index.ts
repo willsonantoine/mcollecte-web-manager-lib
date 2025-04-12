@@ -1,9 +1,7 @@
-import { a } from "vitest/dist/chunks/suite.d.FvehnV49";
-import { SITE_TOKEN } from "./utils/constant";
 // Assume BlocText controller is still relevant if you mix Blocs and Blogs
 import { BlocText } from "./utils/controllers/BlocText.controller";
 import { HttpRequest } from "./utils/httpRequest";
-import { BlocApiResponse, BlocItem } from "./utils/types/IBloc"; // Keep if needed for blocs
+import { BlocItem } from "./utils/types/IBloc"; // Keep if needed for blocs
 import { BlogByUrlResponse, IBlogResponse } from "./utils/types/IBlog";
 // Import the necessary Blog interfaces defined above
 import { IBlogCategoryResponse } from "./utils/types/IBlogCategory"; // Assuming this lists categories
@@ -14,9 +12,12 @@ export default class McollectWebManagerLib {
     public bloc: BlocItem[] = [];
     private isInitialized = false;
     private initializationPromise: Promise<void> | null = null;
+    private apiUrl: string;
+    private siteToken: string;
 
-    constructor() {
-        // Using async initialization pattern from previous example
+    constructor({ api_url, site_token }: { api_url: string, site_token: string }) {
+        this.apiUrl = api_url;
+        this.siteToken = site_token;
     }
 
     // --- Initialization Method (using Option 1 from previous answer) ---
@@ -52,8 +53,9 @@ export default class McollectWebManagerLib {
     private getBloc = async (): Promise<void> => {
         try {
             const response = await HttpRequest({
+                api_url: this.apiUrl,
                 method: 'GET',
-                route: `/blocs/${SITE_TOKEN}/find` // Adjusted route to include /public/
+                route: `/blocs/${this.siteToken}/find` // Adjusted route to include /public/
             });
             if (response?.data?.rows) {
                 this.bloc = response.data.rows;
@@ -83,8 +85,9 @@ export default class McollectWebManagerLib {
     public getWebInfo = async (): Promise<ISiteInfos> => {
         // Route adjusted to include /public/ if that's the standard
         const response = await HttpRequest({
+            api_url: this.apiUrl,
             method: 'GET',
-            route: `/site/${SITE_TOKEN}/find` // Added /public/ prefix
+            route: `/site/${this.siteToken}/find` // Added /public/ prefix
         });
         return response.data;
     }
@@ -92,9 +95,10 @@ export default class McollectWebManagerLib {
     public getBlogsCategory = async (): Promise<IBlogCategoryResponse> => {
         // Assuming IBlogCategoryResponse is the correct type for this list
         const response = await HttpRequest({
+            api_url: this.apiUrl,
             method: 'GET',
             // Assuming route is for listing categories, not blogs within a category
-            route: `/blogs-category/${SITE_TOKEN}/find` // Added /public/ prefix
+            route: `/blogs-category/${this.siteToken}/find` // Added /public/ prefix
         });
         return response.data;
     }
@@ -102,8 +106,9 @@ export default class McollectWebManagerLib {
     // Method to get ALL blogs (likely paginated)
     public getBlogs = async (/* Add pagination params if needed: page, limit */): Promise<IBlogResponse> => {
         // Add query params for pagination if applicable
-        const route = `/blogs/${SITE_TOKEN}/find`; // Added /public/ prefix
+        const route = `/blogs/${this.siteToken}/find`; // Added /public/ prefix
         const response = await HttpRequest({
+            api_url: this.apiUrl,
             method: 'GET',
             route: route
         });
@@ -121,8 +126,9 @@ export default class McollectWebManagerLib {
     public getBlogByUrl = async (blogUrl: string): Promise<BlogByUrlResponse> => {
         // Construct the correct route based on the API spec
         // Note: Using /blogs/ as per the data structure, not /blocs/ from example URL
-        const route = `/blog/${SITE_TOKEN}/${encodeURIComponent(blogUrl)}/find-by-url`;
+        const route = `/blog/${this.siteToken}/${encodeURIComponent(blogUrl)}/find-by-url`;
         const response = await HttpRequest({
+            api_url: this.apiUrl,
             method: 'GET',
             route: route
         });
@@ -139,8 +145,9 @@ export default class McollectWebManagerLib {
      * @returns A promise resolving to the standard blog list API response structure.
      */
     public getBlogsByCategory = async (categoryId: string): Promise<IBlogResponse> => {
-        const route = `/blogs/${SITE_TOKEN}/${categoryId}/find`;
+        const route = `/blogs/${this.siteToken}/${categoryId}/find`;
         const response = await HttpRequest({
+            api_url: this.apiUrl,
             method: 'GET',
             route: route
         });
@@ -155,7 +162,9 @@ export default class McollectWebManagerLib {
 
 // --- Example Usage (using async IIFE) ---
 export const Test = async () => {
-    const cls = new McollectWebManagerLib();
+    const url = "http://localhost:2006";
+    const site_token = "29952c36-191d-405a-937d-cf31593123b7";
+    const cls = new McollectWebManagerLib({ api_url: url, site_token: site_token });
 
     try {
         // Initialize if your methods depend on pre-loaded data (like getBlocById might)
@@ -189,3 +198,5 @@ export const Test = async () => {
         // console.error("\n--- An error occurred during testing ---:", error);
     }
 }
+
+Test();
