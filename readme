@@ -29,9 +29,15 @@ yarn add mcollecte-web-manager-lib
 
 ## Configuration
 
-Cette bibliothèque utilise un `SITE_TOKEN` pour identifier l'instance du site Mcollecte à interroger.
+Cette bibliothèque utilise un `SITE_TOKEN` pour identifier l'instance du site Mcollecte à interroger. et URL_API pour l'url de votre api mcollecte
 
 > ⚠️ Actuellement, ce `SITE_TOKEN` est importé automatiquement depuis `./utils/constant` à l’intérieur de la bibliothèque. Une future amélioration envisagée est de permettre de le passer via les paramètres du constructeur ou une méthode dédiée.
+
+Dans votre fichier .env 
+```env
+URL_API=http://localhost:2006
+SITE_TOKEN=29952c36-191d-405a-937d-cf31593123b7
+```
 
 ## Utilisation
 
