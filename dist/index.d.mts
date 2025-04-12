@@ -395,7 +395,12 @@ declare class McollectWebManagerLib {
     bloc: BlocItem[];
     private isInitialized;
     private initializationPromise;
-    constructor();
+    private apiUrl;
+    private siteToken;
+    constructor({ api_url, site_token }: {
+        api_url: string;
+        site_token: string;
+    });
     initialize(): Promise<void>;
     private loadInitialData;
     private getBloc;

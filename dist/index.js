@@ -35,12 +35,6 @@ __export(index_exports, {
 });
 module.exports = __toCommonJS(index_exports);
 
-// src/utils/constant.ts
-var import_dotenv = __toESM(require("dotenv"));
-import_dotenv.default.config();
-var URL_API = process.env.URL_API;
-var SITE_TOKEN = process.env.SITE_TOKEN;
-
 // src/utils/controllers/BlocText.controller.ts
 var BlocText = class {
   /**
@@ -251,6 +245,7 @@ var BlocText = class {
 // src/utils/httpRequest.ts
 var import_axios = __toESM(require("axios"));
 var HttpRequest = async ({
+  api_url,
   method,
   route
 }) => {
@@ -258,7 +253,7 @@ var HttpRequest = async ({
   const config = {
     method,
     maxBodyLength: Infinity,
-    url: `${URL_API}/public${route}`
+    url: `${api_url}/public${route}`
   };
   try {
     const result = await import_axios.default.request(config);
@@ -281,7 +276,7 @@ var HttpRequest = async ({
 
 // src/index.ts
 var McollectWebManagerLib = class {
-  constructor() {
+  constructor({ api_url, site_token }) {
     // Keep bloc management if necessary
     this.bloc = [];
     this.isInitialized = false;
@@ -292,8 +287,9 @@ var McollectWebManagerLib = class {
       var _a;
       try {
         const response = await HttpRequest({
+          api_url: this.apiUrl,
           method: "GET",
-          route: `/blocs/${SITE_TOKEN}/find`
+          route: `/blocs/${this.siteToken}/find`
           // Adjusted route to include /public/
         });
         if ((_a = response == null ? void 0 : response.data) == null ? void 0 : _a.rows) {
@@ -319,25 +315,28 @@ var McollectWebManagerLib = class {
     };
     this.getWebInfo = async () => {
       const response = await HttpRequest({
+        api_url: this.apiUrl,
         method: "GET",
-        route: `/site/${SITE_TOKEN}/find`
+        route: `/site/${this.siteToken}/find`
         // Added /public/ prefix
       });
       return response.data;
     };
     this.getBlogsCategory = async () => {
       const response = await HttpRequest({
+        api_url: this.apiUrl,
         method: "GET",
         // Assuming route is for listing categories, not blogs within a category
-        route: `/blogs-category/${SITE_TOKEN}/find`
+        route: `/blogs-category/${this.siteToken}/find`
         // Added /public/ prefix
       });
       return response.data;
     };
     // Method to get ALL blogs (likely paginated)
     this.getBlogs = async () => {
-      const route = `/blogs/${SITE_TOKEN}/find`;
+      const route = `/blogs/${this.siteToken}/find`;
       const response = await HttpRequest({
+        api_url: this.apiUrl,
         method: "GET",
         route
       });
@@ -352,8 +351,9 @@ var McollectWebManagerLib = class {
      */
     this.getBlogByUrl = async (blogUrl) => {
       var _a;
-      const route = `/blog/${SITE_TOKEN}/${encodeURIComponent(blogUrl)}/find-by-url`;
+      const route = `/blog/${this.siteToken}/${encodeURIComponent(blogUrl)}/find-by-url`;
       const response = await HttpRequest({
+        api_url: this.apiUrl,
         method: "GET",
         route
       });
@@ -368,8 +368,9 @@ var McollectWebManagerLib = class {
      * @returns A promise resolving to the standard blog list API response structure.
      */
     this.getBlogsByCategory = async (categoryId) => {
-      const route = `/blogs/${SITE_TOKEN}/${categoryId}/find`;
+      const route = `/blogs/${this.siteToken}/${categoryId}/find`;
       const response = await HttpRequest({
+        api_url: this.apiUrl,
         method: "GET",
         route
       });
@@ -378,6 +379,8 @@ var McollectWebManagerLib = class {
       }
       return response.data;
     };
+    this.apiUrl = api_url;
+    this.siteToken = site_token;
   }
   // --- Initialization Method (using Option 1 from previous answer) ---
   async initialize() {
@@ -400,7 +403,9 @@ var McollectWebManagerLib = class {
   }
 };
 var Test = async () => {
-  const cls = new McollectWebManagerLib();
+  const url = "http://localhost:2006";
+  const site_token = "29952c36-191d-405a-937d-cf31593123b7";
+  const cls = new McollectWebManagerLib({ api_url: url, site_token });
   try {
     const blogsCategory = await cls.getBlogsCategory();
     console.log("All blogsCategory :: ", blogsCategory);
@@ -426,6 +431,7 @@ Fetching blogs for category ID: ${categoryIdToTest}...`);
   } catch (error) {
   }
 };
+Test();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Test

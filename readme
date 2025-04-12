@@ -28,10 +28,14 @@ yarn add mcollecte-web-manager-lib
 ```
 
 ## Configuration
-
-Cette bibliothèque utilise un `SITE_TOKEN` pour identifier l'instance du site Mcollecte à interroger. et URL_API pour l'url de votre api mcollecte
-
-> ⚠️ Actuellement, ce `SITE_TOKEN` est importé automatiquement depuis `./utils/constant` à l’intérieur de la bibliothèque. Une future amélioration envisagée est de permettre de le passer via les paramètres du constructeur ou une méthode dédiée.
+Voici comment configurer votre mcollect-web-manager-lin
+```ts
+    const url = "http://localhost:2006";
+    const site_token = "29952c36-191d-405a-937d-cf31593123b7";
+    const cls = new McollectWebManagerLib({ api_url: url, site_token: site_token });
+```
+Le api url c'est l'url source de votre api
+Le site_token est le token d'indentification de votre site web dans la partie admin mcollecte 
 
 Dans votre fichier .env 
 ```env
@@ -44,21 +48,44 @@ SITE_TOKEN=29952c36-191d-405a-937d-cf31593123b7
 ```ts
 import McollectWebManagerLib from 'mcollecte-web-manager-lib';
 
-async function main() {
-    const manager = new McollectWebManagerLib();
-    await manager.initialize();
 
-    const siteInfo = await manager.getWebInfo();
-    console.log(siteInfo);
+// --- Example Usage (using async IIFE) ---
+export const Test = async () => {
+    const url = "http://localhost:2006";
+    const site_token = "29952c36-191d-405a-937d-cf31593123b7"; // from web manager https://app.mcollecte.com
+    const cls = new McollectWebManagerLib({ api_url: url, site_token: site_token });
 
-    const blogDetail = await manager.getBlogByUrl("exemple-de-slug");
-    console.log(blogDetail);
+    try {
+        // Initialize if your methods depend on pre-loaded data (like getBlocById might)
+        // await cls.initialize(); // Uncomment if needed
 
-    const blogsByCategory = await manager.getBlogsByCategory("category-id");
-    console.log(blogsByCategory);
+        // --- Test Get Blog by URL ---
+        const blogsCategory = await cls.getBlogsCategory();
+        console.log('All blogsCategory :: ', blogsCategory);
+        const blogs = await cls.getBlogs();
+        console.log('All blogs :: ', blogs);
+        const blogUrlSlug = 'je-suis-le-premier-blog';
+        console.log(`\nFetching blog by URL: ${blogUrlSlug}...`);
+        const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
+        console.log('Blog found by URL:', blogDetail.blog.title);
+        console.log('Favorite Blogs Count in same category:', blogDetail.favoritBlogs.count);
+        if (blogDetail.favoritBlogs.rows.length > 0) {
+            console.log('First favorite blog title:', blogDetail.favoritBlogs.rows[0].title);
+        }
 
-    const bloc = await manager.getBlocById("bloc-id");
-    console.log(bloc);
+        // --- Test Get Blogs by Category ---
+        const categoryIdToTest = '7331361b-8990-43d6-9db8-b73aaadd18de'; // Example category ID
+        console.log(`\nFetching blogs for category ID: ${categoryIdToTest}...`);
+        const blogsInCategory = await cls.getBlogsByCategory(categoryIdToTest);
+        console.log(`Found ${blogsInCategory.count} blog(s) in category ${categoryIdToTest}.`);
+        if (blogsInCategory.rows.length > 0) {
+            console.log('First blog title in category:', blogsInCategory.rows[0].title);
+            // You could loop through blogsInCategory.rows here
+        }
+
+    } catch (error) {
+        // console.error("\n--- An error occurred during testing ---:", error);
+    }
 }
 ```
 
