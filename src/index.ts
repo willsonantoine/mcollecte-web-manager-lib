@@ -160,6 +160,7 @@ export default class McollectWebManagerLib {
 }
 
 
+
 // --- Example Usage (using async IIFE) ---
 export const Test = async () => {
     const url = "http://localhost:2006";
@@ -198,5 +199,3 @@ export const Test = async () => {
         // console.error("\n--- An error occurred during testing ---:", error);
     }
 }
-
-Test();

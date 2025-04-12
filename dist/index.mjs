@@ -394,7 +394,6 @@ Fetching blogs for category ID: ${categoryIdToTest}...`);
   } catch (error) {
   }
 };
-Test();
 export {
   Test,
   McollectWebManagerLib as default
