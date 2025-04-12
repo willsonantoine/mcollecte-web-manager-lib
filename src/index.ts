@@ -6,6 +6,9 @@ import { BlogByUrlResponse, IBlogResponse } from "./utils/types/IBlogPost";
 // Import the necessary Blog interfaces defined above
 import { IBlogCategoryResponse } from "./utils/types/IBlogCategory"; // Assuming this lists categories
 import { ISiteInfos } from "./utils/types/ISiteInfos"; // Assuming ISiteInfos is the type for /site/.../find
+import { IContactMessage } from "./utils/types/IContactMessage";
+
+import { isValidEmail, isValidMessage, isValidName } from "./utils/vars";
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -15,6 +18,7 @@ export type { BlocItem } from './utils/types/IBloc'; // Assuming IBloc.ts define
 export type { IBlogPost, IBlogResponse, BlogByUrlResponse } from './utils/types/IBlogPost';
 export type { IBlogCategory, IBlogCategoryResponse } from './utils/types/IBlogCategory';
 export type { ISiteInfos } from './utils/types/ISiteInfos';
+export type { IContactMessage } from './utils/types/IContactMessage'
 
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
@@ -64,7 +68,7 @@ export default class McollectWebManagerLib {
             const response = await HttpRequest({
                 api_url: this.apiUrl,
                 method: 'GET',
-                route: `/blocs/${this.siteToken}/find` // Adjusted route to include /public/
+                route: `/blocs/${this.siteToken}/find`
             });
             if (response?.data?.rows) {
                 this.bloc = response.data.rows;
@@ -166,10 +170,28 @@ export default class McollectWebManagerLib {
         }
         return response.data;
     }
+
+    public createContactMessage = async (data_: IContactMessage): Promise<{ status: boolean, message: string }> => {
+        try {
+            if (!isValidEmail(data_.email) && !isValidMessage(data_.message) && !isValidName(data_.name)) {
+                return { status: false, message: 'Invalid email,name or message' };
+            }
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'POST',
+                route: `/contact/${this.siteToken}/message/create`,
+                data: { email: data_.email, name: data_.name, message: data_.message, sujet: data_.sujet }
+            });
+            console.log(response)
+            return { status: response.status, message: response.message };
+        } catch (error: any) {
+            return { status: false, message: error.message };
+        }
+    }
 }
 
 
-// --- Example Usage (using async IIFE) ---
+// --- Example Usage (using async IIFE) --- 
 export const Test = async () => {
     const url = "http://localhost:2006";
     const site_token = "29952c36-191d-405a-937d-cf31593123b7";
@@ -204,13 +226,21 @@ export const Test = async () => {
         // }
 
         // ---- Get bloc by Id 
-        const blocIdToTest = 'dbbea4bc-130f-4cab-a258-d7147d278561'; // Example bloc ID
-        console.log(`\nFetching bloc by ID: ${blocIdToTest}...`);
-        const bloc = await cls.getBlocById(blocIdToTest);
-        console.log('Fetched bloc:', bloc?.imageList);
+        // const blocIdToTest = 'dbbea4bc-130f-4cab-a258-d7147d278561'; // Example bloc ID
+        // console.log(`\nFetching bloc by ID: ${blocIdToTest}...`);
+        // const bloc = await cls.getBlocById(blocIdToTest);
+        // console.log('Fetched bloc:', bloc?.imageList);
+
+        // ----- Test send message
+        // await cls.createContactMessage({
+        //     email: 'willsonantoine@gmail.com',
+        //     message: "Je suis le message de test",
+        //     name: 'Willson Antoine',
+        //     sujet: 'Contact pour entrevue'
+        // })
 
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }
 }
-// Test();
+Test();

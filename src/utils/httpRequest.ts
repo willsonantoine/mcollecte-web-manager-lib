@@ -11,15 +11,18 @@ export const HttpRequest = async ({
     api_url,
     method,
     route,
+    data
 }: {
     api_url: string
     route: string;
-    method: 'POST' | 'GET' | 'PUT' | 'DELETE';
+    method: 'POST' | 'GET' | 'PUT' | 'DELETE',
+    data?: any
 }): Promise<ResponseApiType> => {
     const config = {
         method,
         maxBodyLength: Infinity,
         url: `${api_url}/public${route}`,
+        data
     };
 
     try {

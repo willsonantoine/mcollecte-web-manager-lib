@@ -89,6 +89,18 @@ export const Test = async () => {
 }
 ```
 
+Pour envoyer un message via un formulaire de contact voici l'exemple de code:
+```ts
+ // ----- Test send message
+        await cls.createContactMessage({
+            email: 'monemail@gmail.com',
+            message: "message",
+            name: 'mon_nom',
+            sujet: 'suject'
+        })
+
+``` 
+
 ## API
 
 | Méthode | Description |
@@ -100,6 +112,7 @@ export const Test = async () => {
 | `getBlogByUrl(blogUrl: string)` | Récupère un blog via son slug + suggestions. |
 | `getBlogsByCategory(categoryId: string)` | Blogs d'une catégorie spécifique. |
 | `getBlocById(id: string)` | Récupère un bloc via son ID. Nécessite `initialize()`. |
+| `createContactMessage`| Création du message via le formulaire de contact |
 
 ## Types TypeScript fournis
 
@@ -112,11 +125,12 @@ export const Test = async () => {
 - `BlocApiResponse`
 - `CategoryDetail`
 - `BlocText`
+- `IContactMessage`
 
 Import exemple :
 
 ```ts
-import { ISiteInfos } from 'mcollecte-web-manager-lib/dist/utils/types';
+import { BlocText } from "mcollecte-web-manager-lib";  
 ```
 
 ---
