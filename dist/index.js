@@ -248,13 +248,15 @@ var import_axios = __toESM(require("axios"));
 var HttpRequest = async ({
   api_url,
   method,
-  route
+  route,
+  data
 }) => {
   var _a, _b, _c, _d, _e;
   const config = {
     method,
     maxBodyLength: Infinity,
-    url: `${api_url}/public${route}`
+    url: `${api_url}/public${route}`,
+    data
   };
   try {
     const result = await import_axios.default.request(config);
@@ -275,6 +277,51 @@ var HttpRequest = async ({
   }
 };
 
+// src/utils/vars.ts
+var isValidEmail = (email) => {
+  if (!email) {
+    return false;
+  }
+  const trimmedEmail = email.trim();
+  if (trimmedEmail.length === 0) {
+    return false;
+  }
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (trimmedEmail.length > 254) {
+    return false;
+  }
+  return emailRegex.test(trimmedEmail);
+};
+var isValidName = (name, minLength = 2, maxLength = 100) => {
+  if (!name) {
+    return false;
+  }
+  const trimmedName = name.trim();
+  if (trimmedName.length < minLength || trimmedName.length > maxLength) {
+    return false;
+  }
+  const invalidCharsRegex = /[<>]/;
+  if (invalidCharsRegex.test(trimmedName)) {
+    console.warn("Name contains potentially unsafe characters (< or >).");
+    return false;
+  }
+  return true;
+};
+var isValidMessage = (message, minLength = 10, maxLength = 2e3) => {
+  if (!message) {
+    return false;
+  }
+  const trimmedMessage = message.trim();
+  if (trimmedMessage.length < minLength || trimmedMessage.length > maxLength) {
+    return false;
+  }
+  const invalidCharsRegex = /[<>]/;
+  if (invalidCharsRegex.test(trimmedMessage)) {
+    console.warn("Message contains potentially unsafe characters (< or >). Server-side handling is critical.");
+  }
+  return true;
+};
+
 // src/index.ts
 var McollectWebManagerLib = class {
   constructor({ api_url, site_token }) {
@@ -291,7 +338,6 @@ var McollectWebManagerLib = class {
           api_url: this.apiUrl,
           method: "GET",
           route: `/blocs/${this.siteToken}/find`
-          // Adjusted route to include /public/
         });
         if ((_a = response == null ? void 0 : response.data) == null ? void 0 : _a.rows) {
           this.bloc = response.data.rows;
@@ -380,6 +426,23 @@ var McollectWebManagerLib = class {
       }
       return response.data;
     };
+    this.createContactMessage = async (data_) => {
+      try {
+        if (!isValidEmail(data_.email) && !isValidMessage(data_.message) && !isValidName(data_.name)) {
+          return { status: false, message: "Invalid email,name or message" };
+        }
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "POST",
+          route: `/contact/${this.siteToken}/message/create`,
+          data: { email: data_.email, name: data_.name, message: data_.message, sujet: data_.sujet }
+        });
+        console.log(response);
+        return { status: response.status, message: response.message };
+      } catch (error) {
+        return { status: false, message: error.message };
+      }
+    };
     this.apiUrl = api_url;
     this.siteToken = site_token;
   }
@@ -410,15 +473,11 @@ var Test = async () => {
   const cls = new McollectWebManagerLib({ api_url: url, site_token });
   try {
     await cls.initialize();
-    const blocIdToTest = "dbbea4bc-130f-4cab-a258-d7147d278561";
-    console.log(`
-Fetching bloc by ID: ${blocIdToTest}...`);
-    const bloc = await cls.getBlocById(blocIdToTest);
-    console.log("Fetched bloc:", bloc == null ? void 0 : bloc.imageList);
   } catch (error) {
     console.error("\n--- An error occurred during testing ---:", error);
   }
 };
+Test();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   BlocText,

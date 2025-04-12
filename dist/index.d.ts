@@ -391,6 +391,19 @@ interface ISiteInfos {
     userUpdatedId: string | null;
 }
 
+interface IContactMessage {
+    id?: string;
+    name?: string;
+    email?: string;
+    sujet?: string;
+    message?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    hasRead?: boolean;
+    hasReadByUserId?: string;
+    hasReadAt?: Date;
+}
+
 declare class McollectWebManagerLib {
     bloc: BlocItem[];
     private isInitialized;
@@ -421,7 +434,11 @@ declare class McollectWebManagerLib {
      * @returns A promise resolving to the standard blog list API response structure.
      */
     getBlogsByCategory: (categoryId: string) => Promise<IBlogResponse>;
+    createContactMessage: (data_: IContactMessage) => Promise<{
+        status: boolean;
+        message: string;
+    }>;
 }
 declare const Test: () => Promise<void>;
 
-export { type BlocItem, BlocText, type BlogByUrlResponse, type IBlogCategory, type IBlogCategoryResponse, type IBlogPost, type IBlogResponse, type ISiteInfos, Test, McollectWebManagerLib as default };
+export { type BlocItem, BlocText, type BlogByUrlResponse, type IBlogCategory, type IBlogCategoryResponse, type IBlogPost, type IBlogResponse, type IContactMessage, type ISiteInfos, Test, McollectWebManagerLib as default };
