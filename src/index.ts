@@ -42,7 +42,7 @@ export default class McollectWebManagerLib {
     // Helper to load initial data (e.g., blocs if needed)
     private async loadInitialData(): Promise<void> {
         // Only fetch blocs if they are needed immediately by other methods
-        // await this.getBloc();
+        await this.getBloc();
         // console.log("Blocs loaded during initialization.");
         await Promise.resolve(); // Placeholder if no initial data needed now
     }
@@ -169,33 +169,40 @@ export const Test = async () => {
 
     try {
         // Initialize if your methods depend on pre-loaded data (like getBlocById might)
-        // await cls.initialize(); // Uncomment if needed
+        await cls.initialize(); // Uncomment if needed
 
         // --- Test Get Blog by URL ---
-        const blogsCategory = await cls.getBlogsCategory();
-        console.log('All blogsCategory :: ', blogsCategory);
-        const blogs = await cls.getBlogs();
-        console.log('All blogs :: ', blogs);
-        const blogUrlSlug = 'je-suis-le-premier-blog';
-        console.log(`\nFetching blog by URL: ${blogUrlSlug}...`);
-        const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
-        console.log('Blog found by URL:', blogDetail.blog.title);
-        console.log('Favorite Blogs Count in same category:', blogDetail.favoritBlogs.count);
-        if (blogDetail.favoritBlogs.rows.length > 0) {
-            console.log('First favorite blog title:', blogDetail.favoritBlogs.rows[0].title);
-        }
+        // const blogsCategory = await cls.getBlogsCategory();
+        // console.log('All blogsCategory :: ', blogsCategory);
+        // const blogs = await cls.getBlogs();
+        // console.log('All blogs :: ', blogs);
+        // const blogUrlSlug = 'je-suis-le-premier-blog';
+        // console.log(`\nFetching blog by URL: ${blogUrlSlug}...`);
+        // const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
+        // console.log('Blog found by URL:', blogDetail.blog.title);
+        // console.log('Favorite Blogs Count in same category:', blogDetail.favoritBlogs.count);
+        // if (blogDetail.favoritBlogs.rows.length > 0) {
+        //     console.log('First favorite blog title:', blogDetail.favoritBlogs.rows[0].title);
+        // }
 
         // --- Test Get Blogs by Category ---
-        const categoryIdToTest = '7331361b-8990-43d6-9db8-b73aaadd18de'; // Example category ID
-        console.log(`\nFetching blogs for category ID: ${categoryIdToTest}...`);
-        const blogsInCategory = await cls.getBlogsByCategory(categoryIdToTest);
-        console.log(`Found ${blogsInCategory.count} blog(s) in category ${categoryIdToTest}.`);
-        if (blogsInCategory.rows.length > 0) {
-            console.log('First blog title in category:', blogsInCategory.rows[0].title);
-            // You could loop through blogsInCategory.rows here
-        }
+        // const categoryIdToTest = '7331361b-8990-43d6-9db8-b73aaadd18de'; // Example category ID
+        // console.log(`\nFetching blogs for category ID: ${categoryIdToTest}...`);
+        // const blogsInCategory = await cls.getBlogsByCategory(categoryIdToTest);
+        // console.log(`Found ${blogsInCategory.count} blog(s) in category ${categoryIdToTest}.`);
+        // if (blogsInCategory.rows.length > 0) {
+        //     console.log('First blog title in category:', blogsInCategory.rows[0].title);
+        //     // You could loop through blogsInCategory.rows here
+        // }
+
+        // ---- Get bloc by Id 
+        const blocIdToTest = 'dbbea4bc-130f-4cab-a258-d7147d278561'; // Example bloc ID
+        console.log(`\nFetching bloc by ID: ${blocIdToTest}...`);
+        const bloc = await cls.getBlocById(blocIdToTest);
+        console.log('Fetched bloc:', bloc);
 
     } catch (error) {
         // console.error("\n--- An error occurred during testing ---:", error);
     }
 }
+Test();
