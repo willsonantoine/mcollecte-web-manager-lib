@@ -1,7 +1,7 @@
 /**
  * Represents a single Service item.
  */
-interface IBlogCategory {
+export interface IBlogCategory {
     /** Unique identifier for the service record. */
     id: string;
 

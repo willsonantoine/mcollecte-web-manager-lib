@@ -6,7 +6,16 @@ import { BlogByUrlResponse, IBlogResponse } from "./utils/types/IBlogPost";
 // Import the necessary Blog interfaces defined above
 import { IBlogCategoryResponse } from "./utils/types/IBlogCategory"; // Assuming this lists categories
 import { ISiteInfos } from "./utils/types/ISiteInfos"; // Assuming ISiteInfos is the type for /site/.../find
-import { IBlogPost } from "./utils/types/IBlogPost";
+
+// If BlocText is meant to be public, export it too
+export { BlocText } from './utils/controllers/BlocText.controller';
+
+// --- Export necessary TYPES and INTERFACES ---
+export type { BlocItem } from './utils/types/IBloc'; // Assuming IBloc.ts defines BlocItem
+export type { IBlogPost, IBlogResponse, BlogByUrlResponse } from './utils/types/IBlogPost';
+export type { IBlogCategory, IBlogCategoryResponse } from './utils/types/IBlogCategory';
+export type { ISiteInfos } from './utils/types/ISiteInfos';
+
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
     public bloc: BlocItem[] = [];
@@ -159,7 +168,6 @@ export default class McollectWebManagerLib {
     }
 }
 
-export { BlocText, IBlogCategoryResponse, IBlogResponse, IBlogPost, ISiteInfos, BlogByUrlResponse };
 
 // --- Example Usage (using async IIFE) ---
 export const Test = async () => {

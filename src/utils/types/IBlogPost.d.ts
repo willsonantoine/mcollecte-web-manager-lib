@@ -2,7 +2,7 @@
  * Represents a summary of a Category, often nested within other objects.
  * NOTE: The exact fields might vary based on the actual data structure.
  */
-interface CategorySummary {
+export interface CategorySummary {
     id: string;
     name: string; // Assuming at least 'id' and 'name' are present
     // Add other relevant category fields if known (e.g., slug, description)

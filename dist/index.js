@@ -30,6 +30,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  BlocText: () => BlocText,
   Test: () => Test,
   default: () => McollectWebManagerLib
 });
@@ -332,7 +333,7 @@ var McollectWebManagerLib = class {
       });
       return response.data;
     };
-    // Method to get ALL blogs (likely paginated)
+    // Method to get ALL blogs (likely paginated) 
     this.getBlogs = async () => {
       const route = `/blogs/${this.siteToken}/find`;
       const response = await HttpRequest({
@@ -413,12 +414,13 @@ var Test = async () => {
     console.log(`
 Fetching bloc by ID: ${blocIdToTest}...`);
     const bloc = await cls.getBlocById(blocIdToTest);
-    console.log("Fetched bloc:", bloc);
+    console.log("Fetched bloc:", bloc == null ? void 0 : bloc.imageList);
   } catch (error) {
+    console.error("\n--- An error occurred during testing ---:", error);
   }
 };
-Test();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  BlocText,
   Test
 });

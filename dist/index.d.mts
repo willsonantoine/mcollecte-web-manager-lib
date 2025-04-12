@@ -171,7 +171,7 @@ interface CategorySummary {
 /**
  * Represents a single Blog Post or similar content item.
  */
-interface BlogPost {
+interface IBlogPost {
     /** Unique identifier for the blog post. */
     id: string;
 
@@ -241,11 +241,11 @@ interface BlogPost {
 
 interface IBlogResponse {
     count: number
-    rows: BlogPost[]
+    rows: IBlogPost[]
 }
 
 interface BlogByUrlResponse {
-    blog: BlogPost; // The main blog post found by URL
+    blog: IBlogPost; // The main blog post found by URL
     favoritBlogs: IBlogResponse; // Related favorite blogs (uses the standard list response structure)
 }
 
@@ -424,4 +424,4 @@ declare class McollectWebManagerLib {
 }
 declare const Test: () => Promise<void>;
 
-export { Test, McollectWebManagerLib as default };
+export { type BlocItem, BlocText, type BlogByUrlResponse, type IBlogCategory, type IBlogCategoryResponse, type IBlogPost, type IBlogResponse, type ISiteInfos, Test, McollectWebManagerLib as default };
