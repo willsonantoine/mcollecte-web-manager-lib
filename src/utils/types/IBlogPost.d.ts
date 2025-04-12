@@ -11,7 +11,7 @@ interface CategorySummary {
 /**
  * Represents a single Blog Post or similar content item.
  */
-interface BlogPost {
+export interface IBlogPost {
     /** Unique identifier for the blog post. */
     id: string;
 
@@ -81,10 +81,10 @@ interface BlogPost {
 
 export interface IBlogResponse {
     count: number
-    rows: BlogPost[]
+    rows: IBlogPost[]
 }
 
 export interface BlogByUrlResponse {
-    blog: BlogPost; // The main blog post found by URL
+    blog: IBlogPost; // The main blog post found by URL
     favoritBlogs: IBlogResponse; // Related favorite blogs (uses the standard list response structure)
 }

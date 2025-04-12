@@ -2,11 +2,11 @@
 import { BlocText } from "./utils/controllers/BlocText.controller";
 import { HttpRequest } from "./utils/httpRequest";
 import { BlocItem } from "./utils/types/IBloc"; // Keep if needed for blocs
-import { BlogByUrlResponse, IBlogResponse } from "./utils/types/IBlog";
+import { BlogByUrlResponse, IBlogResponse } from "./utils/types/IBlogPost";
 // Import the necessary Blog interfaces defined above
 import { IBlogCategoryResponse } from "./utils/types/IBlogCategory"; // Assuming this lists categories
 import { ISiteInfos } from "./utils/types/ISiteInfos"; // Assuming ISiteInfos is the type for /site/.../find
-
+import { IBlogPost } from "./utils/types/IBlogPost";
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
     public bloc: BlocItem[] = [];
@@ -103,7 +103,7 @@ export default class McollectWebManagerLib {
         return response.data;
     }
 
-    // Method to get ALL blogs (likely paginated)
+    // Method to get ALL blogs (likely paginated) 
     public getBlogs = async (/* Add pagination params if needed: page, limit */): Promise<IBlogResponse> => {
         // Add query params for pagination if applicable
         const route = `/blogs/${this.siteToken}/find`; // Added /public/ prefix
@@ -159,7 +159,7 @@ export default class McollectWebManagerLib {
     }
 }
 
-
+export { BlocText, IBlogCategoryResponse, IBlogResponse, IBlogPost, ISiteInfos, BlogByUrlResponse };
 
 // --- Example Usage (using async IIFE) ---
 export const Test = async () => {
@@ -199,10 +199,10 @@ export const Test = async () => {
         const blocIdToTest = 'dbbea4bc-130f-4cab-a258-d7147d278561'; // Example bloc ID
         console.log(`\nFetching bloc by ID: ${blocIdToTest}...`);
         const bloc = await cls.getBlocById(blocIdToTest);
-        console.log('Fetched bloc:', bloc);
+        console.log('Fetched bloc:', bloc?.imageList);
 
     } catch (error) {
-        // console.error("\n--- An error occurred during testing ---:", error);
+        console.error("\n--- An error occurred during testing ---:", error);
     }
 }
-Test();
+// Test();

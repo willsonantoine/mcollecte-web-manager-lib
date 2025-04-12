@@ -399,6 +399,7 @@ var McollectWebManagerLib = class {
   }
   // Helper to load initial data (e.g., blocs if needed)
   async loadInitialData() {
+    await this.getBloc();
     await Promise.resolve();
   }
 };
@@ -407,30 +408,16 @@ var Test = async () => {
   const site_token = "29952c36-191d-405a-937d-cf31593123b7";
   const cls = new McollectWebManagerLib({ api_url: url, site_token });
   try {
-    const blogsCategory = await cls.getBlogsCategory();
-    console.log("All blogsCategory :: ", blogsCategory);
-    const blogs = await cls.getBlogs();
-    console.log("All blogs :: ", blogs);
-    const blogUrlSlug = "je-suis-le-premier-blog";
+    await cls.initialize();
+    const blocIdToTest = "dbbea4bc-130f-4cab-a258-d7147d278561";
     console.log(`
-Fetching blog by URL: ${blogUrlSlug}...`);
-    const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
-    console.log("Blog found by URL:", blogDetail.blog.title);
-    console.log("Favorite Blogs Count in same category:", blogDetail.favoritBlogs.count);
-    if (blogDetail.favoritBlogs.rows.length > 0) {
-      console.log("First favorite blog title:", blogDetail.favoritBlogs.rows[0].title);
-    }
-    const categoryIdToTest = "7331361b-8990-43d6-9db8-b73aaadd18de";
-    console.log(`
-Fetching blogs for category ID: ${categoryIdToTest}...`);
-    const blogsInCategory = await cls.getBlogsByCategory(categoryIdToTest);
-    console.log(`Found ${blogsInCategory.count} blog(s) in category ${categoryIdToTest}.`);
-    if (blogsInCategory.rows.length > 0) {
-      console.log("First blog title in category:", blogsInCategory.rows[0].title);
-    }
+Fetching bloc by ID: ${blocIdToTest}...`);
+    const bloc = await cls.getBlocById(blocIdToTest);
+    console.log("Fetched bloc:", bloc);
   } catch (error) {
   }
 };
+Test();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   Test
