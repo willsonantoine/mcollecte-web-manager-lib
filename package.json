@@ -1,6 +1,6 @@
 {
   "name": "mcollecte-web-manager-lib",
-  "version": "1.9.0",
+  "version": "1.10.1",
   "description": "",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -35,5 +35,10 @@
   },
   "dependencies": {
     "axios": "^1.8.4"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/willsonantoine/mcollecte-web-manager-lib/issues"
+  },
+  "homepage": "https://github.com/willsonantoine/mcollecte-web-manager-lib#readme",
+  "documentation": "https://github.com/willsonantoine/mcollecte-web-manager-lib/wiki"
 }
