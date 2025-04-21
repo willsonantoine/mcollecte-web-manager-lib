@@ -9,6 +9,8 @@ import { ISiteInfos } from "./utils/types/ISiteInfos"; // Assuming ISiteInfos is
 import { IContactMessage } from "./utils/types/IContactMessage";
 
 import { isValidEmail, isValidMessage, isValidName } from "./utils/vars";
+import { ProductItem } from "./utils/types/IProduit";
+import { CategoryItem } from "./utils/types/ICategory";
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -182,10 +184,22 @@ export default class McollectWebManagerLib {
                 route: `/contact/${this.siteToken}/message/create`,
                 data: { email: data_.email, name: data_.name, message: data_.message, sujet: data_.sujet }
             });
-            console.log(response)
             return { status: response.status, message: response.message };
         } catch (error: any) {
             return { status: false, message: error.message };
+        }
+    }
+
+    public getProduct = async ({ categoryId = "", search = "", subCategoryId = "" }: { categoryId?: string, search?: string, subCategoryId?: string }): Promise<{ product: ProductItem[], category: CategoryItem[] }> => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'GET',
+                route: `/product/${this.siteToken}?categoryId=${categoryId}&subCategoryId=${subCategoryId}&search=${search} `,
+            });
+            return response.data;
+        } catch (error: any) {
+            return { product: [], category: [] };
         }
     }
 }
@@ -239,6 +253,9 @@ export const Test = async () => {
         //     sujet: 'Contact pour entrevue'
         // })
 
+        // ----- Test get product
+        const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
+        console.log(result.product[0]);
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }

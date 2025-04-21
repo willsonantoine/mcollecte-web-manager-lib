@@ -134,6 +134,102 @@ import { BlocText } from "mcollecte-web-manager-lib";
 ```
 
 ---
+## Récupération des produits et catégories
+
+Cette méthode vous permet de récupérer dynamiquement la liste des produits ainsi que leurs catégories, avec la possibilité de filtrer par **categoryId**, **subCategoryId**, et **terme de recherche**.
+
+### Exemple d'utilisation
+
+```ts
+import McollectWebManagerLib from 'mcollecte-web-manager-lib';
+
+const cls = new McollectWebManagerLib({
+    api_url: "http://localhost:2006",
+    site_token: "29952c36-191d-405a-937d-cf31593123b7"
+});
+
+(async () => {
+    try {
+        const result = await cls.getProduct({
+            categoryId: "d3059a5f-94e2-4c8c-a02d-0ec90f8ccfab",
+            subCategoryId: "cd71dd05-c922-474d-aca2-e5dcff1210da",
+            search: "chemise"
+        });
+
+        console.log("Produits trouvés:", result.product);
+        console.log("Catégories associées:", result.category);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des produits :", error);
+    }
+})();
+```
+
+### Signature de la méthode
+
+```ts
+getProduct({
+    categoryId?: string,
+    subCategoryId?: string,
+    search?: string
+}): Promise<{ product: ProductItem[], category: CategoryItem[] }>
+```
+
+### Paramètres
+
+| Nom | Type | Description |
+|-----|------|-------------|
+| `categoryId` | `string` | (Optionnel) L'identifiant de la catégorie principale. |
+| `subCategoryId` | `string` | (Optionnel) L'identifiant d'une sous-catégorie spécifique. |
+| `search` | `string` | (Optionnel) Terme de recherche pour filtrer les produits. |
+
+### Type de retour
+
+```ts
+{
+    product: ProductItem[], // liste de produits trouvés
+    category: CategoryItem[] // liste de catégories associées aux produits
+}
+```
+
+### Exemple de réponse typique
+
+```json
+{
+  "product": [
+    {
+      "id": "c95a2bcc-8014-41da-8a28-e38359cb658f",
+      "name": "CHEMISE 100% POLYESTER",
+      "url": "chemise-100-polyester",
+      "description": "<p>Description</p><p>Détaillez les spécifications, avantages ou autres informations du produit.</p>",
+      "price_min": 0,
+      "price_max": 0,
+      "unite": "sachet",
+      "currency": {
+        "id": "82fa5bb2-9378-48c7-abe6-a986c58d76de",
+        "name": "USD"
+      },
+      "subCategory": {
+        "name": "Habillement enfant",
+        "category": {
+          "name": "Matériels informatiques"
+        }
+      }
+    }
+  ],
+  "category": [
+    {
+      "id": "d3059a5f-94e2-4c8c-a02d-0ec90f8ccfab",
+      "name": "Matériels informatiques",
+      "subCategories": [
+        {
+          "id": "cd71dd05-c922-474d-aca2-e5dcff1210da",
+          "name": "Habillement enfant"
+        }
+      ]
+    }
+  ]
+}
+```
 
 ## À propos du concepteur
 
