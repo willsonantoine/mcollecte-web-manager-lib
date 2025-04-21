@@ -113,6 +113,9 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 | `getBlogsByCategory(categoryId: string)` | Blogs d'une catégorie spécifique. |
 | `getBlocById(id: string)` | Récupère un bloc via son ID. Nécessite `initialize()`. |
 | `createContactMessage`| Création du message via le formulaire de contact |
+| `getProduct`| Récupération des produits et catégories |
+
+---
 
 ## Types TypeScript fournis
 
@@ -126,6 +129,9 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 - `CategoryDetail`
 - `BlocText`
 - `IContactMessage`
+- `CategoryItem`
+- `SubCategoryItem`
+- `ProductItem`
 
 Import exemple :
 

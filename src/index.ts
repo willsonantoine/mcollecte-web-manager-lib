@@ -256,10 +256,10 @@ export const Test = async () => {
         // })
 
         // ----- Test get product
-        const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
-        console.log(result.product[0]);
+        // const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
+        // console.log(result.product[0]);
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }
 }
-Test();
+// Test();
