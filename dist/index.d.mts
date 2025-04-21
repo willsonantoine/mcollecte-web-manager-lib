@@ -404,6 +404,48 @@ interface IContactMessage {
     hasReadAt?: Date;
 }
 
+interface SubCategoryItem {
+    id: string;
+    name: string;
+    description: string;
+    image: string;
+    category?: CategoryItem;
+}
+
+interface CategoryItem {
+    id: string;
+    name: string;
+    description: string;
+    image: string;
+    subCategories?: SubCategoryItem[];
+}
+
+interface CurrencyItem {
+    id: string;
+    name: string;
+}
+
+interface ProductItem {
+    id: string;
+    name: string;
+    description: string;
+    images: string; // JSON stringified array
+    brand: string | null;
+    type: string;
+    stockLocation: string | null;
+    url: string;
+    unite: string;
+    reference: string | null;
+    price_max: number;
+    price_min: number;
+    currencyId: string;
+    subCategoryId: string;
+    createdAt: string;
+    updatedAt: string;
+    subCategory: SubCategoryItem;
+    currency: CurrencyItem;
+}
+
 declare class McollectWebManagerLib {
     bloc: BlocItem[];
     private isInitialized;
@@ -437,6 +479,14 @@ declare class McollectWebManagerLib {
     createContactMessage: (data_: IContactMessage) => Promise<{
         status: boolean;
         message: string;
+    }>;
+    getProduct: ({ categoryId, search, subCategoryId }: {
+        categoryId?: string;
+        search?: string;
+        subCategoryId?: string;
+    }) => Promise<{
+        product: ProductItem[];
+        category: CategoryItem[];
     }>;
 }
 declare const Test: () => Promise<void>;

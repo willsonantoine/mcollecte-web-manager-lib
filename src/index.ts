@@ -20,7 +20,9 @@ export type { BlocItem } from './utils/types/IBloc'; // Assuming IBloc.ts define
 export type { IBlogPost, IBlogResponse, BlogByUrlResponse } from './utils/types/IBlogPost';
 export type { IBlogCategory, IBlogCategoryResponse } from './utils/types/IBlogCategory';
 export type { ISiteInfos } from './utils/types/ISiteInfos';
-export type { IContactMessage } from './utils/types/IContactMessage'
+export type { IContactMessage } from './utils/types/IContactMessage';
+export type { ProductItem } from './utils/types/IProduit';
+export type { CategoryItem, SubCategoryItem } from './utils/types/ICategory';
 
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary

@@ -399,10 +399,21 @@ var McollectWebManagerLib = class {
           route: `/contact/${this.siteToken}/message/create`,
           data: { email: data_.email, name: data_.name, message: data_.message, sujet: data_.sujet }
         });
-        console.log(response);
         return { status: response.status, message: response.message };
       } catch (error) {
         return { status: false, message: error.message };
+      }
+    };
+    this.getProduct = async ({ categoryId = "", search = "", subCategoryId = "" }) => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "GET",
+          route: `/product/${this.siteToken}?categoryId=${categoryId}&subCategoryId=${subCategoryId}&search=${search} `
+        });
+        return response.data;
+      } catch (error) {
+        return { product: [], category: [] };
       }
     };
     this.apiUrl = api_url;
@@ -435,6 +446,8 @@ var Test = async () => {
   const cls = new McollectWebManagerLib({ api_url: url, site_token });
   try {
     await cls.initialize();
+    const result = await cls.getProduct({ categoryId: "", search: "", subCategoryId: "" });
+    console.log(result.product[0]);
   } catch (error) {
     console.error("\n--- An error occurred during testing ---:", error);
   }
