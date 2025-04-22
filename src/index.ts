@@ -11,6 +11,7 @@ import { IContactMessage } from "./utils/types/IContactMessage";
 import { isValidEmail, isValidMessage, isValidName } from "./utils/vars";
 import { ProductItem } from "./utils/types/IProduit";
 import { CategoryItem } from "./utils/types/ICategory";
+import { ISiteMember } from "./utils/types/ISiteMember";
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -23,6 +24,7 @@ export type { ISiteInfos } from './utils/types/ISiteInfos';
 export type { IContactMessage } from './utils/types/IContactMessage';
 export type { ProductItem } from './utils/types/IProduit';
 export type { CategoryItem, SubCategoryItem } from './utils/types/ICategory';
+export type { IFonction, IMember, ISiteMember } from './utils/types/ISiteMember';
 
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
@@ -204,6 +206,19 @@ export default class McollectWebManagerLib {
             return { product: [], category: [] };
         }
     }
+
+    public getMembers = async (): Promise<{ count: number, rows: ISiteMember[] }> => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'GET',
+                route: `/members/${this.siteToken}`,
+            });
+            return response.data;
+        } catch (error: any) {
+            return { count: 0, rows: [] };
+        }
+    }
 }
 
 
@@ -258,6 +273,14 @@ export const Test = async () => {
         // ----- Test get product
         // const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
         // console.log(result.product[0]);
+
+        // ----- Test get members
+        // const { count, rows } = await cls.getMembers();
+        // console.log('Members:', rows);
+        // console.log('Members count:', count);
+        // if (rows.length > 0) {
+        //     console.log('First member name:', rows[0].member.fullname);
+        // }
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }

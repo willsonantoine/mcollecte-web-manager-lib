@@ -114,6 +114,8 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 | `getBlocById(id: string)` | Récupère un bloc via son ID. Nécessite `initialize()`. |
 | `createContactMessage`| Création du message via le formulaire de contact |
 | `getProduct`| Récupération des produits et catégories |
+| `getMembers`| Récupération des membres ou staff |
+
 
 ---
 
@@ -132,6 +134,8 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 - `CategoryItem`
 - `SubCategoryItem`
 - `ProductItem`
+- `ISiteMember`
+- `IMember`
 
 Import exemple :
 
@@ -236,6 +240,48 @@ getProduct({
   ]
 }
 ```
+
+## Affichage de la liste des membres ou du staff
+
+Ce module permet de récupérer et d’afficher la liste des membres ou du personnel (staff) d’une organisation ou d’une entreprise sur un site web.
+
+### Exemple d'utilisation
+
+```ts
+// --- Récupération des membres
+const { count, rows } = await cls.getMembers();
+
+console.log('Liste des membres :', rows);
+console.log('Nombre total de membres :', count);
+
+if (rows.length > 0) {
+    console.log('Nom du premier membre :', rows[0].member.fullname);
+}
+```
+Interfaces
+```ts
+export interface ISiteMember {
+    id: string;             // Identifiant unique du membre dans le site
+    statusAt: string;       // Date à laquelle le statut a été attribué
+    updatedAt: string;      // Date de la dernière mise à jour
+    member: IMember;        // Informations détaillées du membre
+}
+
+export interface IMember {
+    fullname: string;       // Nom complet du membre
+    img: string;            // URL de l’image ou avatar du membre
+    number: string;         // Numéro de téléphone ou identifiant
+    adress: string;         // Adresse physique ou localisation
+    fonction: IFonction;    // Fonction ou rôle au sein de l'organisation
+}
+
+export interface IFonction {
+    name: string;           // Intitulé de la fonction
+    description: string;    // Description du rôle ou des responsabilités
+}
+
+```
+
 
 ## À propos du concepteur
 
