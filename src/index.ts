@@ -12,6 +12,7 @@ import { isValidEmail, isValidMessage, isValidName } from "./utils/vars";
 import { ProductItem } from "./utils/types/IProduit";
 import { CategoryItem } from "./utils/types/ICategory";
 import { ISiteMember } from "./utils/types/ISiteMember";
+import { ICreateAccount } from './utils/types/ICreateAccount';
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -25,6 +26,7 @@ export type { IContactMessage } from './utils/types/IContactMessage';
 export type { ProductItem } from './utils/types/IProduit';
 export type { CategoryItem, SubCategoryItem } from './utils/types/ICategory';
 export type { IFonction, IMember, ISiteMember } from './utils/types/ISiteMember';
+export type { ICreateAccount } from './utils/types/ICreateAccount';
 
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
@@ -217,6 +219,14 @@ export default class McollectWebManagerLib {
             return response.data;
         } catch (error: any) {
             return { count: 0, rows: [] };
+        }
+    }
+
+    public signUp = async ({ }: ICreateAccount) => {
+        try {
+
+        } catch (error: any) {
+            
         }
     }
 }
