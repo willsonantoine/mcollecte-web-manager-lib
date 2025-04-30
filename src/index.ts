@@ -13,6 +13,7 @@ import { ProductItem } from "./utils/types/IProduit";
 import { CategoryItem } from "./utils/types/ICategory";
 import { ISiteMember } from "./utils/types/ISiteMember";
 import { ICreateAccount } from './utils/types/ICreateAccount';
+import { IUser } from "./utils/types/IUser";
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -27,6 +28,7 @@ export type { ProductItem } from './utils/types/IProduit';
 export type { CategoryItem, SubCategoryItem } from './utils/types/ICategory';
 export type { IFonction, IMember, ISiteMember } from './utils/types/ISiteMember';
 export type { ICreateAccount } from './utils/types/ICreateAccount';
+export type { IUser } from './utils/types/IUser';
 
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
@@ -222,17 +224,78 @@ export default class McollectWebManagerLib {
         }
     }
 
-    public signUp = async ({ }: ICreateAccount) => {
+    public signUp = async ({ name, password, phone, email }: ICreateAccount) => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'POST',
+                route: `/auth/create-account/${this.siteToken}`,
+                data: { name, password, phone, email }
+            });
+            localStorage.setItem('phone', phone);
+            return response.data;
+        } catch (error: any) {
+            return null
+        }
+    }
+
+    public resendOtp = async ({ phone }: { phone: string }) => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'GET',
+                route: `/auth/resend-otp/${this.siteToken}/${phone}`
+            });
+            return response.data;
+        } catch (error: any) {
+            return null
+        }
+    }
+
+    public verifyOtp = async ({ otp, phone }: { otp: string, phone: string }): Promise<{ data: IUser | null, message: string, status: boolean }> => {
         try {
 
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'POST',
+                route: `/auth/verify-otp/${this.siteToken}`,
+                data: { phone, otp }
+            });
+            if (response.status) {
+                return { data: response.data, message: response.message, status: true };
+            } else {
+                console.error("Error verifying OTP:", response.message);
+                return { data: null, message: response.message, status: false };
+            }
         } catch (error: any) {
-            
+            console.error("Error verifying OTP:", error);
+            return { data: null, message: error.message, status: false };
+        }
+    }
+
+    public signIn = async ({ phone, password }: { phone: string, password: string }): Promise<{ data: IUser | null, message: string, status: boolean }> => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'POST',
+                route: `/auth/login/${this.siteToken}`,
+                data: { username: phone, password }
+            });
+            if (response.status) {
+                return { data: response.data, message: response.message, status: true };
+            } else {
+                console.error("Error signing in:", response.message);
+                return { data: null, message: response.message, status: false };
+            }
+        } catch (error: any) {
+            console.error("Error signing in:", error);
+            return { data: null, message: error.message, status: false };
         }
     }
 }
 
 
-// --- Example Usage (using async IIFE) --- 
+// --- Example Usage (using async IIFE) ---  
 export const Test = async () => {
     const url = "http://localhost:2006";
     const site_token = "29952c36-191d-405a-937d-cf31593123b7";
@@ -240,14 +303,14 @@ export const Test = async () => {
 
     try {
         // Initialize if your methods depend on pre-loaded data (like getBlocById might)
-        await cls.initialize(); // Uncomment if needed
+        // await cls.initialize(); // Uncomment if needed
 
         // --- Test Get Blog by URL ---
         // const blogsCategory = await cls.getBlogsCategory();
         // console.log('All blogsCategory :: ', blogsCategory);
         // const blogs = await cls.getBlogs();
-        // console.log('All blogs :: ', blogs);
-        // const blogUrlSlug = 'je-suis-le-premier-blog';
+        // console.log('All blogs :: ', blogs);  
+        // const blogUrlSlug = 'je-suis-le-premier-blog'; 
         // console.log(`\nFetching blog by URL: ${blogUrlSlug}...`);
         // const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
         // console.log('Blog found by URL:', blogDetail.blog.title);
@@ -290,9 +353,26 @@ export const Test = async () => {
         // console.log('Members count:', count);
         // if (rows.length > 0) {
         //     console.log('First member name:', rows[0].member.fullname);
-        // }
-    } catch (error) {
+        // } 
+        // ------ Test signup   
+        // const user = await cls.signUp({ name: 'user1', password: '1234', phone: '+243148250506', email: '4willsonantoine@gmail.com' });
+        // console.log('User created:', user);
+
+        // ------ Test resend OTP
+        // const otp = await cls.resendOtp({ phone: '+243128250506' });
+        // console.log('OTP sent:', otp);
+        // ------ Test verify OTP 
+        // const verify = await cls.verifyOtp({ otp: '480293', phone: '+243148250506' });
+        // console.log('OTP verified:', verify);
+        // ------ Test sign in 
+ 
+        // const signIn = await cls.signIn({ phone: '+243148250506', password: '1234' });
+        // console.log('User signed in:', signIn);  
+  
+    } catch (error) { 
         console.error("\n--- An error occurred during testing ---:", error);
     }
 }
-// Test();
+
+// Test(); 
+  

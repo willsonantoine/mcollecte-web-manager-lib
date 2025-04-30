@@ -279,9 +279,51 @@ export interface IFonction {
     name: string;           // Intitulé de la fonction
     description: string;    // Description du rôle ou des responsabilités
 }
+```
+## 👤 Compte utilisateur (Account)
 
+Cette section présente les principales opérations liées à la gestion du compte utilisateur dans `mcollecte-web-manager-lib`.
+
+---
+
+### 🔹 1. `signUp()`: Créer un compte utilisateur
+
+```ts
+const user = await cls.signUp({
+  name: 'user1',
+  password: '1234',
+  phone: '+243148250506',
+  email: '4willsonantoine@gmail.com'
+});
+
+console.log('User created:', user);
 ```
 
+---
+
+### 🔹 2. `verifyOtp()`: Vérifier le code OTP
+
+```ts
+const verify = await cls.verifyOtp({
+  otp: '480293',
+  phone: '+243148250506'
+});
+
+console.log('OTP verified:', verify);
+```
+
+---
+
+### 🔹 3. `signIn()`: Connexion utilisateur
+
+```ts
+const signIn = await cls.signIn({
+  phone: '+243148250506',
+  password: '1234'
+});
+
+console.log('User signed in:', signIn);
+```
 
 ## À propos du concepteur
 
