@@ -18,7 +18,7 @@ export const HttpRequest = async ({
     route: string;
     method: 'POST' | 'GET' | 'PUT' | 'DELETE',
     data?: any,
-    userToken?: string
+    userToken?: string | undefined | null
 }): Promise<ResponseApiType> => {
     const url = `${api_url}/public${route}`;
     // console.log('url', url);

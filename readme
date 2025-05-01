@@ -49,22 +49,24 @@ SITE_TOKEN=29952c36-191d-405a-937d-cf31593123b7
 import McollectWebManagerLib from 'mcollecte-web-manager-lib';
 
 
-// --- Example Usage (using async IIFE) ---
+// --- Example Usage (using async IIFE) ---  
 export const Test = async () => {
     const url = "http://localhost:2006";
-    const site_token = "29952c36-191d-405a-937d-cf31593123b7"; // from web manager https://app.mcollecte.com
-    const cls = new McollectWebManagerLib({ api_url: url, site_token: site_token });
+    const site_token = "29952c36-191d-405a-937d-cf31593123b7";
+    const tokenUser = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkZTQ1OGY3LWM1NTMtNDgyMy05YTRlLTAwNjQ0YTQ1MTIzZSIsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzQ2MDM1Nzg4fQ.Yq0wQSsgxstfgHPM_sNUMp8cf16fivvf-xn3agunCKs`
+
+    const cls = new McollectWebManagerLib({ api_url: url, site_token: site_token, tokenUser });
 
     try {
         // Initialize if your methods depend on pre-loaded data (like getBlocById might)
-        // await cls.initialize(); // Uncomment if needed
+        await cls.initialize(); // Uncomment if needed
 
         // --- Test Get Blog by URL ---
         const blogsCategory = await cls.getBlogsCategory();
         console.log('All blogsCategory :: ', blogsCategory);
         const blogs = await cls.getBlogs();
-        console.log('All blogs :: ', blogs);
-        const blogUrlSlug = 'je-suis-le-premier-blog';
+        console.log('All blogs :: ', blogs);  
+        const blogUrlSlug = 'je-suis-le-premier-blog'; 
         console.log(`\nFetching blog by URL: ${blogUrlSlug}...`);
         const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
         console.log('Blog found by URL:', blogDetail.blog.title);
@@ -83,10 +85,61 @@ export const Test = async () => {
             // You could loop through blogsInCategory.rows here
         }
 
+        // ---- Get bloc by Id 
+        const blocIdToTest = 'dbbea4bc-130f-4cab-a258-d7147d278561'; // Example bloc ID
+        console.log(`\nFetching bloc by ID: ${blocIdToTest}...`);
+        const bloc = await cls.getBlocById(blocIdToTest);
+        console.log('Fetched bloc:', bloc?.imageList);
+
+        // ----- Test send message
+        await cls.createContactMessage({
+            email: 'willsonantoine@gmail.com',
+            message: "Je suis le message de test",
+            name: 'Willson Antoine',
+            sujet: 'Contact pour entrevue'
+        })
+
+        // ----- Test get product
+        const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
+        console.log(result.product[0]);
+
+        // ----- Test get members
+        const { count, rows } = await cls.getMembers();
+        console.log('Members:', rows);
+        console.log('Members count:', count);
+        if (rows.length > 0) {
+            console.log('First member name:', rows[0].member.fullname);
+        } 
+        // ------ Test signup   
+        const user = await cls.signUp({ name: 'user1', password: '1234', phone: '+243148250506', email: '4willsonantoine@gmail.com' });
+        console.log('User created:', user);
+
+        // ------ Test resend OTP
+        const otp = await cls.resendOtp({ phone: '+243128250506' });
+        console.log('OTP sent:', otp);
+        // ------ Test verify OTP 
+        const verify = await cls.verifyOtp({ otp: '480293', phone: '+243148250506' });
+        console.log('OTP verified:', verify);
+        // ------ Test sign in 
+        const signIn = await cls.signIn({ phone: '+243148250506', password: '1234' });
+        console.log('User signed in:', signIn); 
+
+        // ------ Test commande
+        const commande = await cls.commande({
+            phoneNumber: '+243148250506',
+            payementMethod: 'mobile', lines: [
+                { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 },
+                { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 }
+            ]
+        });
+        console.log('Commande response:', commande); 
+
     } catch (error) {
-        // console.error("\n--- An error occurred during testing ---:", error);
+        console.error("\n--- An error occurred during testing ---:", error);
     }
 }
+
+Test();
 ```
 
 Pour envoyer un message via un formulaire de contact voici l'exemple de code:
@@ -115,6 +168,11 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 | `createContactMessage`| Création du message via le formulaire de contact |
 | `getProduct`| Récupération des produits et catégories |
 | `getMembers`| Récupération des membres ou staff |
+| `commande`| Enregistrement du panier de l'utilisateur en cours...
+| `signIn`| Connexion utilisateur
+| `signUp`| Créeation du compte utilisateur
+| `verifyOtp`| Vérification de l'otp
+| `resendOtp`| Renvoie de l'otp
 
 
 ---
@@ -136,6 +194,7 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 - `ProductItem`
 - `ISiteMember`
 - `IMember`
+- `IUser`
 
 Import exemple :
 
@@ -324,6 +383,61 @@ const signIn = await cls.signIn({
 
 console.log('User signed in:', signIn);
 ```
+### 🔹 4. `Commande ou panier` : Pour permettre à un utilisateur connecté de soumettre son panier ou une commande de produits
+
+Cette méthode permet à un utilisateur authentifié de passer une commande avec un ou plusieurs produits.
+
+---
+
+#### ✅ Initialisation avec authentification :
+
+Avant d'appeler la méthode `commande()`, il faut d'abord initialiser la bibliothèque avec un `tokenUser` (JWT) obtenu lors de la connexion (`signIn`).
+
+```ts
+const url = "http://localhost:2006";
+const site_token = "29952c36-191d-405a-937d-cf31593123b7";
+const tokenUser = `------token-------`;
+
+const cls = new McollectWebManagerLib({
+  api_url: url,
+  site_token: site_token,
+  tokenUser: tokenUser
+});
+```
+
+---
+
+#### 🛒 Soumission d'une commande :
+
+```ts
+const commande = await cls.commande({
+  phoneNumber: '+243148250506',
+  payementMethod: 'mobile',
+  lines: [
+    { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 },
+    { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 }
+  ]
+});
+
+console.log('Commande response:', commande);
+```
+
+---
+
+#### 🧾 Paramètres :
+
+- `phoneNumber` *(string)* : Numéro de téléphone de l'utilisateur connecté.
+- `payementMethod` *(string)* : Méthode de paiement (ex : `"mobile"`, `"cash"`).
+- `lines` *(array)* : Détails du panier :
+  - `productId` *(string)* : ID unique du produit à commander.
+  - `quantity` *(number)* : Quantité de ce produit.
+
+---
+
+#### 🔐 Note :
+
+L'utilisateur doit être **connecté** et le `tokenUser` doit être **valide** pour que la commande soit acceptée. Sinon, une erreur d'autorisation sera renvoyée.
+
 
 ## À propos du concepteur
 

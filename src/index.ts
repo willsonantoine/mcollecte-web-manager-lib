@@ -14,6 +14,7 @@ import { CategoryItem } from "./utils/types/ICategory";
 import { ISiteMember } from "./utils/types/ISiteMember";
 import { ICreateAccount } from './utils/types/ICreateAccount';
 import { IUser } from "./utils/types/IUser";
+import { ILine } from "./utils/types/ILine";
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -37,10 +38,12 @@ export default class McollectWebManagerLib {
     private initializationPromise: Promise<void> | null = null;
     private apiUrl: string;
     private siteToken: string;
+    private tokenUser: string | null | undefined = null; // Assuming this is for user token management
 
-    constructor({ api_url, site_token }: { api_url: string, site_token: string }) {
+    constructor({ api_url, site_token, tokenUser }: { api_url: string, site_token: string, tokenUser?: string }) {
         this.apiUrl = api_url;
         this.siteToken = site_token;
+        this.tokenUser = tokenUser || null; // Optional user token, if needed
     }
 
     // --- Initialization Method (using Option 1 from previous answer) ---
@@ -292,6 +295,28 @@ export default class McollectWebManagerLib {
             return { data: null, message: error.message, status: false };
         }
     }
+
+    public commande = async ({ lines, payementMethod, phoneNumber }: { payementMethod: string, phoneNumber?: string, lines: ILine[] }): Promise<{ data: IUser | null, message: string, status: boolean }> => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'POST',
+                route: `/product/commandes/${this.siteToken}`,
+                data: { phoneNumber, lines, payementMethod },
+                userToken: this.tokenUser
+            });
+            if (response.status) {
+                return { data: response.data, message: response.message, status: true };
+            } else {
+                console.error("Error signing in:", response.message);
+                return { data: null, message: response.message, status: false };
+            }
+        } catch (error: any) {
+            console.error("Error signing in:", error);
+            return { data: null, message: error.message, status: false };
+        }
+    }
+
 }
 
 
@@ -299,7 +324,9 @@ export default class McollectWebManagerLib {
 export const Test = async () => {
     const url = "http://localhost:2006";
     const site_token = "29952c36-191d-405a-937d-cf31593123b7";
-    const cls = new McollectWebManagerLib({ api_url: url, site_token: site_token });
+    const tokenUser = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkZTQ1OGY3LWM1NTMtNDgyMy05YTRlLTAwNjQ0YTQ1MTIzZSIsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzQ2MDM1Nzg4fQ.Yq0wQSsgxstfgHPM_sNUMp8cf16fivvf-xn3agunCKs`
+
+    const cls = new McollectWebManagerLib({ api_url: url, site_token: site_token, tokenUser });
 
     try {
         // Initialize if your methods depend on pre-loaded data (like getBlocById might)
@@ -365,14 +392,22 @@ export const Test = async () => {
         // const verify = await cls.verifyOtp({ otp: '480293', phone: '+243148250506' });
         // console.log('OTP verified:', verify);
         // ------ Test sign in 
- 
         // const signIn = await cls.signIn({ phone: '+243148250506', password: '1234' });
-        // console.log('User signed in:', signIn);  
-  
-    } catch (error) { 
+        // console.log('User signed in:', signIn); 
+
+        // ------ Test commande
+        // const commande = await cls.commande({
+        //     phoneNumber: '+243148250506',
+        //     payementMethod: 'mobile', lines: [
+        //         { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 },
+        //         { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 }
+        //     ]
+        // });
+        // console.log('Commande response:', commande); 
+
+    } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }
 }
 
-// Test(); 
-  
+// Test();
