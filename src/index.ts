@@ -403,6 +403,7 @@ export const Test = async () => {
         //         { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 }
         //     ]
         // });
+        // .
         // console.log('Commande response:', commande); 
 
     } catch (error) {
