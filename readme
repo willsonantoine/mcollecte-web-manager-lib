@@ -134,6 +134,16 @@ export const Test = async () => {
         });
         console.log('Commande response:', commande); 
 
+
+// ------ getCommandes ------
+        // Recuperer la liste des commandes
+        const { data } = await cls.getCommandes();
+
+        for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            console.log('Commande:', element.lines);
+        }
+        
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }
