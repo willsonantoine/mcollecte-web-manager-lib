@@ -437,6 +437,7 @@ export const Test = async () => {
             const element = data[i];
             console.log('Commande:', element.lines);
         }
+        
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }

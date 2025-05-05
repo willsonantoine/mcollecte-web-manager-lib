@@ -584,11 +584,11 @@ var McollectWebManagerLib = class {
           return { data: response.data, message: response.message, status: true };
         } else {
           console.error("Error signing in:", response.message);
-          return { data: null, message: response.message, status: false };
+          return { data: [], message: response.message, status: false };
         }
       } catch (error) {
         console.error("Error signing in:", error);
-        return { data: null, message: error.message, status: false };
+        return { data: [], message: error.message, status: false };
       }
     };
     this.apiUrl = api_url;
@@ -623,7 +623,10 @@ var Test = async () => {
   const cls = new McollectWebManagerLib({ api_url: url, site_token, tokenUser });
   try {
     const { data } = await cls.getCommandes();
-    console.log(data);
+    for (let i = 0; i < data.length; i++) {
+      const element = data[i];
+      console.log("Commande:", element.lines);
+    }
   } catch (error) {
     console.error("\n--- An error occurred during testing ---:", error);
   }

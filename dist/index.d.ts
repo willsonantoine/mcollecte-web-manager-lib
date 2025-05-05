@@ -490,6 +490,32 @@ interface ILine {
     quantity: number;
 }
 
+interface ICommande {
+    id: string,
+    amount: number,
+    status: string,
+    payementMethod: string,
+    phoneNumber: string,
+    createdAt: string,
+    updatedAt: string,
+    currency: { id: string, name: string },
+    lines: [
+        {
+            id: string,
+            quantity: number,
+            price: number, 
+            produit: {
+                id: string,
+                name: string,
+                price_max: number,
+                images: string,
+                unite: string,
+                type: string,
+            }
+        }
+    ]
+}
+
 declare class McollectWebManagerLib {
     bloc: BlocItem[];
     private isInitialized;
@@ -568,15 +594,11 @@ declare class McollectWebManagerLib {
         status: boolean;
     }>;
     getCommandes: () => Promise<{
-        data: any;
+        data: ICommande[] | [];
         message: string;
-        status: boolean;
-    } | {
-        data: null;
-        message: any;
         status: boolean;
     }>;
 }
 declare const Test: () => Promise<void>;
 
-export { type BlocItem, BlocText, type BlogByUrlResponse, type CategoryItem, type IBlogCategory, type IBlogCategoryResponse, type IBlogPost, type IBlogResponse, type IContactMessage, type ICreateAccount, type IFonction, type IMember, type ISiteInfos, type ISiteMember, type IUser, type ProductItem, type SubCategoryItem, Test, McollectWebManagerLib as default };
+export { type BlocItem, BlocText, type BlogByUrlResponse, type CategoryItem, type IBlogCategory, type IBlogCategoryResponse, type IBlogPost, type IBlogResponse, type ICommande, type IContactMessage, type ICreateAccount, type IFonction, type ILine, type IMember, type ISiteInfos, type ISiteMember, type IUser, type ProductItem, type SubCategoryItem, Test, McollectWebManagerLib as default };
