@@ -317,10 +317,30 @@ export default class McollectWebManagerLib {
         }
     }
 
+    public getCommandes = async () => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'GET',
+                route: `/product/commandes/${this.siteToken}`,
+                userToken: this.tokenUser
+            });
+            if (response.status) {
+                return { data: response.data, message: response.message, status: true };
+            } else {
+                console.error("Error signing in:", response.message);
+                return { data: null, message: response.message, status: false };
+            }
+        } catch (error: any) {
+            console.error("Error signing in:", error);
+            return { data: null, message: error.message, status: false };
+        }
+    }
+
 }
 
 
-// --- Example Usage (using async IIFE) ---  
+// --- Example Usage (using async IIFE) ---   
 export const Test = async () => {
     const url = "http://localhost:2006";
     const site_token = "29952c36-191d-405a-937d-cf31593123b7";
@@ -406,9 +426,14 @@ export const Test = async () => {
         // .
         // console.log('Commande response:', commande); 
 
+        // ------ getCommandes ------
+        // Recuperer la liste des commandes
+        const { data } = await cls.getCommandes();
+        console.log(data);
+
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }
 }
 
-// Test();
+Test();

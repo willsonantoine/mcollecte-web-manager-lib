@@ -1,3 +1,20 @@
+var __defProp = Object.defineProperty;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+
 // src/utils/controllers/BlocText.controller.ts
 var BlocText = class {
   /**
@@ -211,14 +228,20 @@ var HttpRequest = async ({
   api_url,
   method,
   route,
-  data
+  data,
+  userToken
 }) => {
-  var _a, _b, _c, _d, _e;
+  var _a, _b, _c, _d, _e, _f, _g;
+  const url = `${api_url}/public${route}`;
   const config = {
     method,
     maxBodyLength: Infinity,
-    url: `${api_url}/public${route}`,
-    data
+    url,
+    data,
+    headers: __spreadValues({
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    }, userToken && { Authorization: `Bearer ${userToken}` })
   };
   try {
     const result = await axios.request(config);
@@ -229,11 +252,11 @@ var HttpRequest = async ({
       data: ((_b = result.data) == null ? void 0 : _b.data) || {}
     };
   } catch (error) {
-    console.log(error);
+    console.log(((_d = (_c = error == null ? void 0 : error.response) == null ? void 0 : _c.data) == null ? void 0 : _d.message) || error.message);
     return {
       status: false,
-      message: ((_d = (_c = error == null ? void 0 : error.response) == null ? void 0 : _c.data) == null ? void 0 : _d.message) || error.message || "Erreur inconnue",
-      code: ((_e = error == null ? void 0 : error.response) == null ? void 0 : _e.status) || 500,
+      message: ((_f = (_e = error == null ? void 0 : error.response) == null ? void 0 : _e.data) == null ? void 0 : _f.message) || error.message || "Erreur inconnue",
+      code: ((_g = error == null ? void 0 : error.response) == null ? void 0 : _g.status) || 500,
       data: {}
     };
   }
@@ -286,11 +309,13 @@ var isValidMessage = (message, minLength = 10, maxLength = 2e3) => {
 
 // src/index.ts
 var McollectWebManagerLib = class {
-  constructor({ api_url, site_token }) {
+  // Assuming this is for user token management
+  constructor({ api_url, site_token, tokenUser }) {
     // Keep bloc management if necessary
     this.bloc = [];
     this.isInitialized = false;
     this.initializationPromise = null;
+    this.tokenUser = null;
     // --- Existing Methods (Keep or modify as needed) ---
     // If you still manage Blocs
     this.getBloc = async () => {
@@ -416,8 +441,124 @@ var McollectWebManagerLib = class {
         return { product: [], category: [] };
       }
     };
+    this.getMembers = async () => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "GET",
+          route: `/members/${this.siteToken}`
+        });
+        return response.data;
+      } catch (error) {
+        return { count: 0, rows: [] };
+      }
+    };
+    this.signUp = async ({ name, password, phone, email }) => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "POST",
+          route: `/auth/create-account/${this.siteToken}`,
+          data: { name, password, phone, email }
+        });
+        localStorage.setItem("phone", phone);
+        return response.data;
+      } catch (error) {
+        return null;
+      }
+    };
+    this.resendOtp = async ({ phone }) => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "GET",
+          route: `/auth/resend-otp/${this.siteToken}/${phone}`
+        });
+        return response.data;
+      } catch (error) {
+        return null;
+      }
+    };
+    this.verifyOtp = async ({ otp, phone }) => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "POST",
+          route: `/auth/verify-otp/${this.siteToken}`,
+          data: { phone, otp }
+        });
+        if (response.status) {
+          return { data: response.data, message: response.message, status: true };
+        } else {
+          console.error("Error verifying OTP:", response.message);
+          return { data: null, message: response.message, status: false };
+        }
+      } catch (error) {
+        console.error("Error verifying OTP:", error);
+        return { data: null, message: error.message, status: false };
+      }
+    };
+    this.signIn = async ({ phone, password }) => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "POST",
+          route: `/auth/login/${this.siteToken}`,
+          data: { username: phone, password }
+        });
+        if (response.status) {
+          return { data: response.data, message: response.message, status: true };
+        } else {
+          console.error("Error signing in:", response.message);
+          return { data: null, message: response.message, status: false };
+        }
+      } catch (error) {
+        console.error("Error signing in:", error);
+        return { data: null, message: error.message, status: false };
+      }
+    };
+    this.commande = async ({ lines, payementMethod, phoneNumber }) => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "POST",
+          route: `/product/commandes/${this.siteToken}`,
+          data: { phoneNumber, lines, payementMethod },
+          userToken: this.tokenUser
+        });
+        if (response.status) {
+          return { data: response.data, message: response.message, status: true };
+        } else {
+          console.error("Error signing in:", response.message);
+          return { data: null, message: response.message, status: false };
+        }
+      } catch (error) {
+        console.error("Error signing in:", error);
+        return { data: null, message: error.message, status: false };
+      }
+    };
+    this.getCommandes = async () => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "GET",
+          route: `/product/commandes/${this.siteToken}`,
+          userToken: this.tokenUser
+        });
+        if (response.status) {
+          return { data: response.data, message: response.message, status: true };
+        } else {
+          console.error("Error signing in:", response.message);
+          return { data: null, message: response.message, status: false };
+        }
+      } catch (error) {
+        console.error("Error signing in:", error);
+        return { data: null, message: error.message, status: false };
+      }
+    };
     this.apiUrl = api_url;
     this.siteToken = site_token;
+    this.tokenUser = tokenUser || null;
   }
   // --- Initialization Method (using Option 1 from previous answer) ---
   async initialize() {
@@ -443,11 +584,11 @@ var McollectWebManagerLib = class {
 var Test = async () => {
   const url = "http://localhost:2006";
   const site_token = "29952c36-191d-405a-937d-cf31593123b7";
-  const cls = new McollectWebManagerLib({ api_url: url, site_token });
+  const tokenUser = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkZTQ1OGY3LWM1NTMtNDgyMy05YTRlLTAwNjQ0YTQ1MTIzZSIsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzQ2MDM1Nzg4fQ.Yq0wQSsgxstfgHPM_sNUMp8cf16fivvf-xn3agunCKs`;
+  const cls = new McollectWebManagerLib({ api_url: url, site_token, tokenUser });
   try {
-    await cls.initialize();
-    const result = await cls.getProduct({ categoryId: "", search: "", subCategoryId: "" });
-    console.log(result.product[0]);
+    const { data } = await cls.getCommandes();
+    console.log(data);
   } catch (error) {
     console.error("\n--- An error occurred during testing ---:", error);
   }

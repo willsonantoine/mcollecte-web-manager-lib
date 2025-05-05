@@ -438,7 +438,12 @@ console.log('Commande response:', commande);
 
 L'utilisateur doit être **connecté** et le `tokenUser` doit être **valide** pour que la commande soit acceptée. Sinon, une erreur d'autorisation sera renvoyée.
 
-
+#### Get Commandes:
+```ts
+    // Recuperer la liste des commandes
+    const { data } = await cls.getCommandes();
+    console.log(data);
+```
 ## À propos du concepteur
 
 Ce projet a été conçu et développé par **Willson Vulembere Antoine**, ingénieur en informatique passionné par les technologies communautaires, l'agriculture et les systèmes numériques durables. Willson est spécialisé dans le développement backend, les architectures distribuées, et la conception de solutions technologiques pour des environnements à faible connectivité.

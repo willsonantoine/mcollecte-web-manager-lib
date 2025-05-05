@@ -446,15 +446,61 @@ interface ProductItem {
     currency: CurrencyItem;
 }
 
+interface ISiteMember {
+    id: string
+    statusAt: string
+    updatedAt: string
+    member: IMember
+}
+
+interface IMember {
+    fullname: string
+    img: string
+    number: string
+    adress: string
+    fonction: IFonction
+}
+
+interface IFonction {
+    name: string
+    description: string
+}
+
+interface ICreateAccount {
+    name: string;
+    phone: string;
+    email?: string;
+    password: string;
+}
+
+interface IUser {
+    user: {
+        id: string;
+        username: string;
+        email: string;
+        phone: string;
+        avatar: string;
+        name: string;
+    },
+    token: string;
+}
+
+interface ILine {
+    productId: string;
+    quantity: number;
+}
+
 declare class McollectWebManagerLib {
     bloc: BlocItem[];
     private isInitialized;
     private initializationPromise;
     private apiUrl;
     private siteToken;
-    constructor({ api_url, site_token }: {
+    private tokenUser;
+    constructor({ api_url, site_token, tokenUser }: {
         api_url: string;
         site_token: string;
+        tokenUser?: string;
     });
     initialize(): Promise<void>;
     private loadInitialData;
@@ -488,7 +534,49 @@ declare class McollectWebManagerLib {
         product: ProductItem[];
         category: CategoryItem[];
     }>;
+    getMembers: () => Promise<{
+        count: number;
+        rows: ISiteMember[];
+    }>;
+    signUp: ({ name, password, phone, email }: ICreateAccount) => Promise<any>;
+    resendOtp: ({ phone }: {
+        phone: string;
+    }) => Promise<any>;
+    verifyOtp: ({ otp, phone }: {
+        otp: string;
+        phone: string;
+    }) => Promise<{
+        data: IUser | null;
+        message: string;
+        status: boolean;
+    }>;
+    signIn: ({ phone, password }: {
+        phone: string;
+        password: string;
+    }) => Promise<{
+        data: IUser | null;
+        message: string;
+        status: boolean;
+    }>;
+    commande: ({ lines, payementMethod, phoneNumber }: {
+        payementMethod: string;
+        phoneNumber?: string;
+        lines: ILine[];
+    }) => Promise<{
+        data: IUser | null;
+        message: string;
+        status: boolean;
+    }>;
+    getCommandes: () => Promise<{
+        data: any;
+        message: string;
+        status: boolean;
+    } | {
+        data: null;
+        message: any;
+        status: boolean;
+    }>;
 }
 declare const Test: () => Promise<void>;
 
-export { type BlocItem, BlocText, type BlogByUrlResponse, type IBlogCategory, type IBlogCategoryResponse, type IBlogPost, type IBlogResponse, type IContactMessage, type ISiteInfos, Test, McollectWebManagerLib as default };
+export { type BlocItem, BlocText, type BlogByUrlResponse, type CategoryItem, type IBlogCategory, type IBlogCategoryResponse, type IBlogPost, type IBlogResponse, type IContactMessage, type ICreateAccount, type IFonction, type IMember, type ISiteInfos, type ISiteMember, type IUser, type ProductItem, type SubCategoryItem, Test, McollectWebManagerLib as default };
