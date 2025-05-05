@@ -15,6 +15,7 @@ import { ISiteMember } from "./utils/types/ISiteMember";
 import { ICreateAccount } from './utils/types/ICreateAccount';
 import { IUser } from "./utils/types/IUser";
 import { ILine } from "./utils/types/ILine";
+import { ICommande } from "./utils/types/ICommande";
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -30,6 +31,8 @@ export type { CategoryItem, SubCategoryItem } from './utils/types/ICategory';
 export type { IFonction, IMember, ISiteMember } from './utils/types/ISiteMember';
 export type { ICreateAccount } from './utils/types/ICreateAccount';
 export type { IUser } from './utils/types/IUser';
+export type { ILine } from './utils/types/ILine';
+export type { ICommande } from './utils/types/ICommande';
 
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
@@ -317,7 +320,7 @@ export default class McollectWebManagerLib {
         }
     }
 
-    public getCommandes = async () => {
+    public getCommandes = async (): Promise<{ data: ICommande[] | [], message: string, status: boolean }> => {
         try {
             const response = await HttpRequest({
                 api_url: this.apiUrl,
@@ -329,11 +332,11 @@ export default class McollectWebManagerLib {
                 return { data: response.data, message: response.message, status: true };
             } else {
                 console.error("Error signing in:", response.message);
-                return { data: null, message: response.message, status: false };
+                return { data: [], message: response.message, status: false };
             }
         } catch (error: any) {
             console.error("Error signing in:", error);
-            return { data: null, message: error.message, status: false };
+            return { data: [], message: error.message, status: false };
         }
     }
 
@@ -429,8 +432,11 @@ export const Test = async () => {
         // ------ getCommandes ------
         // Recuperer la liste des commandes
         const { data } = await cls.getCommandes();
-        console.log(data);
 
+        for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            console.log('Commande:', element.lines);
+        }
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }

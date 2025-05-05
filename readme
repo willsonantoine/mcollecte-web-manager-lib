@@ -173,6 +173,7 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 | `signUp`| Créeation du compte utilisateur
 | `verifyOtp`| Vérification de l'otp
 | `resendOtp`| Renvoie de l'otp
+| `getCommandes`| Récupération des commandes
 
 
 ---
@@ -195,6 +196,7 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 - `ISiteMember`
 - `IMember`
 - `IUser`
+- `ICommande`
 
 Import exemple :
 
@@ -441,8 +443,11 @@ L'utilisateur doit être **connecté** et le `tokenUser` doit être **valide** p
 #### Get Commandes:
 ```ts
     // Recuperer la liste des commandes
-    const { data } = await cls.getCommandes();
-    console.log(data);
+     const { data } = await cls.getCommandes();
+    for (let i = 0; i < data.length; i++) {
+            const element = data[i];
+            console.log('Commande:', element.lines);
+    }
 ```
 ## À propos du concepteur
 
