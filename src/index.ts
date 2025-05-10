@@ -245,6 +245,20 @@ export default class McollectWebManagerLib {
         }
     }
 
+    public recoverPassword = async ({ phone }: { phone: string }) => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'POST',
+                route: `/auth/recover-password/${this.siteToken}`,
+                data: { phone }
+            });
+            return response.data;
+        } catch (error: any) {
+            return null
+        }
+    }
+
     public resendOtp = async ({ phone }: { phone: string }) => {
         try {
             const response = await HttpRequest({
@@ -418,26 +432,28 @@ export const Test = async () => {
         // const signIn = await cls.signIn({ phone: '+243148250506', password: '1234' });
         // console.log('User signed in:', signIn); 
 
+        // ------ Recover password
+        // const recoverPassword = await cls.recoverPassword({ phone: '+243000000000' });
+        // console.log('Password recovered:', recoverPassword);
+   
         // ------ Test commande
         // const commande = await cls.commande({
-        //     phoneNumber: '+243148250506',
+        //     phoneNumber: '+243148250522',
         //     payementMethod: 'mobile', lines: [
         //         { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 },
-        //         { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 }
-        //     ]
+        //      ]
         // });
-        // .
-        // console.log('Commande response:', commande); 
+        // console.log('Commande response:', commande);
 
         // ------ getCommandes ------
         // Recuperer la liste des commandes
-        const { data } = await cls.getCommandes();
+        // const { data } = await cls.getCommandes();
+        // console.log(data);
+        // for (let i = 0; i < data.length; i++) {
+        //     const element = data[i];
+        //     console.log('Commande:', element.lines);
+        // }
 
-        for (let i = 0; i < data.length; i++) {
-            const element = data[i];
-            console.log('Commande:', element.lines);
-        }
-        
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }

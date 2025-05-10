@@ -49,7 +49,7 @@ SITE_TOKEN=29952c36-191d-405a-937d-cf31593123b7
 import McollectWebManagerLib from 'mcollecte-web-manager-lib';
 
 
-// --- Example Usage (using async IIFE) ---  
+// --- Example Usage (using async IIFE) ---   
 export const Test = async () => {
     const url = "http://localhost:2006";
     const site_token = "29952c36-191d-405a-937d-cf31593123b7";
@@ -59,97 +59,100 @@ export const Test = async () => {
 
     try {
         // Initialize if your methods depend on pre-loaded data (like getBlocById might)
-        await cls.initialize(); // Uncomment if needed
+        // await cls.initialize(); // Uncomment if needed
 
         // --- Test Get Blog by URL ---
-        const blogsCategory = await cls.getBlogsCategory();
-        console.log('All blogsCategory :: ', blogsCategory);
-        const blogs = await cls.getBlogs();
-        console.log('All blogs :: ', blogs);  
-        const blogUrlSlug = 'je-suis-le-premier-blog'; 
-        console.log(`\nFetching blog by URL: ${blogUrlSlug}...`);
-        const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
-        console.log('Blog found by URL:', blogDetail.blog.title);
-        console.log('Favorite Blogs Count in same category:', blogDetail.favoritBlogs.count);
-        if (blogDetail.favoritBlogs.rows.length > 0) {
-            console.log('First favorite blog title:', blogDetail.favoritBlogs.rows[0].title);
-        }
+        // const blogsCategory = await cls.getBlogsCategory();
+        // console.log('All blogsCategory :: ', blogsCategory);
+        // const blogs = await cls.getBlogs();
+        // console.log('All blogs :: ', blogs);  
+        // const blogUrlSlug = 'je-suis-le-premier-blog'; 
+        // console.log(`\nFetching blog by URL: ${blogUrlSlug}...`);
+        // const blogDetail = await cls.getBlogByUrl(blogUrlSlug);
+        // console.log('Blog found by URL:', blogDetail.blog.title);
+        // console.log('Favorite Blogs Count in same category:', blogDetail.favoritBlogs.count);
+        // if (blogDetail.favoritBlogs.rows.length > 0) {
+        //     console.log('First favorite blog title:', blogDetail.favoritBlogs.rows[0].title);
+        // }
 
         // --- Test Get Blogs by Category ---
-        const categoryIdToTest = '7331361b-8990-43d6-9db8-b73aaadd18de'; // Example category ID
-        console.log(`\nFetching blogs for category ID: ${categoryIdToTest}...`);
-        const blogsInCategory = await cls.getBlogsByCategory(categoryIdToTest);
-        console.log(`Found ${blogsInCategory.count} blog(s) in category ${categoryIdToTest}.`);
-        if (blogsInCategory.rows.length > 0) {
-            console.log('First blog title in category:', blogsInCategory.rows[0].title);
-            // You could loop through blogsInCategory.rows here
-        }
+        // const categoryIdToTest = '7331361b-8990-43d6-9db8-b73aaadd18de'; // Example category ID
+        // console.log(`\nFetching blogs for category ID: ${categoryIdToTest}...`);
+        // const blogsInCategory = await cls.getBlogsByCategory(categoryIdToTest);
+        // console.log(`Found ${blogsInCategory.count} blog(s) in category ${categoryIdToTest}.`);
+        // if (blogsInCategory.rows.length > 0) {
+        //     console.log('First blog title in category:', blogsInCategory.rows[0].title);
+        //     // You could loop through blogsInCategory.rows here
+        // }
 
         // ---- Get bloc by Id 
-        const blocIdToTest = 'dbbea4bc-130f-4cab-a258-d7147d278561'; // Example bloc ID
-        console.log(`\nFetching bloc by ID: ${blocIdToTest}...`);
-        const bloc = await cls.getBlocById(blocIdToTest);
-        console.log('Fetched bloc:', bloc?.imageList);
+        // const blocIdToTest = 'dbbea4bc-130f-4cab-a258-d7147d278561'; // Example bloc ID
+        // console.log(`\nFetching bloc by ID: ${blocIdToTest}...`);
+        // const bloc = await cls.getBlocById(blocIdToTest);
+        // console.log('Fetched bloc:', bloc?.imageList);
 
         // ----- Test send message
-        await cls.createContactMessage({
-            email: 'willsonantoine@gmail.com',
-            message: "Je suis le message de test",
-            name: 'Willson Antoine',
-            sujet: 'Contact pour entrevue'
-        })
+        // await cls.createContactMessage({
+        //     email: 'willsonantoine@gmail.com',
+        //     message: "Je suis le message de test",
+        //     name: 'Willson Antoine',
+        //     sujet: 'Contact pour entrevue'
+        // })
 
         // ----- Test get product
-        const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
-        console.log(result.product[0]);
+        // const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
+        // console.log(result.product[0]);
 
         // ----- Test get members
-        const { count, rows } = await cls.getMembers();
-        console.log('Members:', rows);
-        console.log('Members count:', count);
-        if (rows.length > 0) {
-            console.log('First member name:', rows[0].member.fullname);
-        } 
+        // const { count, rows } = await cls.getMembers();
+        // console.log('Members:', rows);
+        // console.log('Members count:', count);
+        // if (rows.length > 0) {
+        //     console.log('First member name:', rows[0].member.fullname);
+        // } 
         // ------ Test signup   
-        const user = await cls.signUp({ name: 'user1', password: '1234', phone: '+243148250506', email: '4willsonantoine@gmail.com' });
-        console.log('User created:', user);
+        // const user = await cls.signUp({ name: 'user1', password: '1234', phone: '+243148250506', email: '4willsonantoine@gmail.com' });
+        // console.log('User created:', user);
 
         // ------ Test resend OTP
-        const otp = await cls.resendOtp({ phone: '+243128250506' });
-        console.log('OTP sent:', otp);
+        // const otp = await cls.resendOtp({ phone: '+243128250506' });
+        // console.log('OTP sent:', otp);
         // ------ Test verify OTP 
-        const verify = await cls.verifyOtp({ otp: '480293', phone: '+243148250506' });
-        console.log('OTP verified:', verify);
+        // const verify = await cls.verifyOtp({ otp: '480293', phone: '+243148250506' });
+        // console.log('OTP verified:', verify);
         // ------ Test sign in 
-        const signIn = await cls.signIn({ phone: '+243148250506', password: '1234' });
-        console.log('User signed in:', signIn); 
+        // const signIn = await cls.signIn({ phone: '+243148250506', password: '1234' });
+        // console.log('User signed in:', signIn); 
 
+        // ------ Recover password
+        // const recoverPassword = await cls.recoverPassword({ phone: '+243000000000' });
+        // console.log('Password recovered:', recoverPassword);
+   
         // ------ Test commande
-        const commande = await cls.commande({
-            phoneNumber: '+243148250506',
-            payementMethod: 'mobile', lines: [
-                { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 },
-                { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 }
-            ]
-        });
-        console.log('Commande response:', commande); 
+        // const commande = await cls.commande({
+        //     phoneNumber: '+243148250522',
+        //     payementMethod: 'mobile', lines: [
+        //         { productId: 'c95a2bcc-8014-41da-8a28-e38359cb658f', quantity: 2 },
+        //      ]
+        // });
+        // console.log('Commande response:', commande);
 
-
-// ------ getCommandes ------
+        // ------ getCommandes ------
         // Recuperer la liste des commandes
-        const { data } = await cls.getCommandes();
+        // const { data } = await cls.getCommandes();
+        // console.log(data);
+        // for (let i = 0; i < data.length; i++) {
+        //     const element = data[i];
+        //     console.log('Commande:', element.lines);
+        // }
 
-        for (let i = 0; i < data.length; i++) {
-            const element = data[i];
-            console.log('Commande:', element.lines);
-        }
-        
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }
 }
 
 Test();
+
 ```
 
 Pour envoyer un message via un formulaire de contact voici l'exemple de code:
@@ -184,6 +187,8 @@ Pour envoyer un message via un formulaire de contact voici l'exemple de code:
 | `verifyOtp`| Vérification de l'otp
 | `resendOtp`| Renvoie de l'otp
 | `getCommandes`| Récupération des commandes
+| `recoverPassword`| Récupération du mot de passe
+
 
 
 ---
@@ -392,6 +397,14 @@ const signIn = await cls.signIn({
   phone: '+243148250506',
   password: '1234'
 });
+```
+### 🔹 4. `recoverPassword()`: Restaurer le mot de passe via un numéro de téléphone
+
+```ts
+        const recoverPassword = await cls.recoverPassword({ phone: '+243000000000' });
+        console.log('Password recovered:', recoverPassword);
+   
+```
 
 console.log('User signed in:', signIn);
 ```
