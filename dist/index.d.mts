@@ -565,6 +565,9 @@ declare class McollectWebManagerLib {
         rows: ISiteMember[];
     }>;
     signUp: ({ name, password, phone, email }: ICreateAccount) => Promise<any>;
+    recoverPassword: ({ phone }: {
+        phone: string;
+    }) => Promise<any>;
     resendOtp: ({ phone }: {
         phone: string;
     }) => Promise<any>;

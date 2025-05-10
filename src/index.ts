@@ -204,7 +204,7 @@ export default class McollectWebManagerLib {
         }
     }
 
-    public getProduct = async ({ categoryId = "", search = "", subCategoryId = "" }: { categoryId?: string, search?: string, subCategoryId?: string }): Promise<{ product: ProductItem[], category: CategoryItem[] }> => {
+    public getProduct = async ({ categoryId = "", search = "", subCategoryId = "" }: { categoryId?: string, search?: string, subCategoryId?: string }): Promise<{ product: { count: number, rows: ProductItem[] }, category: CategoryItem[] }> => {
         try {
             const response = await HttpRequest({
                 api_url: this.apiUrl,
@@ -213,7 +213,7 @@ export default class McollectWebManagerLib {
             });
             return response.data;
         } catch (error: any) {
-            return { product: [], category: [] };
+            return { product: { count: 0, rows: [] }, category: [] };
         }
     }
 
@@ -408,8 +408,8 @@ export const Test = async () => {
         // })
 
         // ----- Test get product
-        // const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
-        // console.log(result.product[0]);
+        const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
+        console.log(result.product);
 
         // ----- Test get members
         // const { count, rows } = await cls.getMembers();
@@ -435,7 +435,7 @@ export const Test = async () => {
         // ------ Recover password
         // const recoverPassword = await cls.recoverPassword({ phone: '+243000000000' });
         // console.log('Password recovered:', recoverPassword);
-   
+
         // ------ Test commande
         // const commande = await cls.commande({
         //     phoneNumber: '+243148250522',

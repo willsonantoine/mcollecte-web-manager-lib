@@ -502,6 +502,19 @@ var McollectWebManagerLib = class {
         return null;
       }
     };
+    this.recoverPassword = async ({ phone }) => {
+      try {
+        const response = await HttpRequest({
+          api_url: this.apiUrl,
+          method: "POST",
+          route: `/auth/recover-password/${this.siteToken}`,
+          data: { phone }
+        });
+        return response.data;
+      } catch (error) {
+        return null;
+      }
+    };
     this.resendOtp = async ({ phone }) => {
       try {
         const response = await HttpRequest({
@@ -622,11 +635,6 @@ var Test = async () => {
   const tokenUser = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRkZTQ1OGY3LWM1NTMtNDgyMy05YTRlLTAwNjQ0YTQ1MTIzZSIsInJvbGUiOiJVc2VyIiwiaWF0IjoxNzQ2MDM1Nzg4fQ.Yq0wQSsgxstfgHPM_sNUMp8cf16fivvf-xn3agunCKs`;
   const cls = new McollectWebManagerLib({ api_url: url, site_token, tokenUser });
   try {
-    const { data } = await cls.getCommandes();
-    for (let i = 0; i < data.length; i++) {
-      const element = data[i];
-      console.log("Commande:", element.lines);
-    }
   } catch (error) {
     console.error("\n--- An error occurred during testing ---:", error);
   }

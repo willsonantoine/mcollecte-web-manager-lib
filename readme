@@ -403,8 +403,6 @@ const signIn = await cls.signIn({
 ```ts
         const recoverPassword = await cls.recoverPassword({ phone: '+243000000000' });
         console.log('Password recovered:', recoverPassword);
-   
-```
 
 console.log('User signed in:', signIn);
 ```
