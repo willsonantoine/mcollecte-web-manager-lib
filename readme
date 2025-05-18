@@ -125,7 +125,7 @@ export const Test = async () => {
         // console.log('User signed in:', signIn); 
 
         // ------ Recover password
-        // const recoverPassword = await cls.recoverPassword({ phone: '+243000000000' });
+        // const recoverPassword = await cls.recoverPassword({ phone: '+243990084881' });
         // console.log('Password recovered:', recoverPassword);
    
         // ------ Test commande
@@ -145,6 +145,17 @@ export const Test = async () => {
         //     const element = data[i];
         //     console.log('Commande:', element.lines);
         // }
+
+        // --------- Get Current Profil
+        // const profil = await cls.getCurrentProfil();
+        // console.log('Profil Name:', profil.data?.username);
+
+        // ---------- Update profil-----------
+        // const updateProfil = await cls.updateProfil({
+        //     username: 'willson', oldPassword: '@Aa12345678', password: '@Aa12345678', confirmPassword: '@Aa12345678'
+        // });
+
+        // console.log(updateProfil)
 
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);

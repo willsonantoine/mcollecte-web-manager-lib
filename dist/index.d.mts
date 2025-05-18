@@ -557,7 +557,10 @@ declare class McollectWebManagerLib {
         search?: string;
         subCategoryId?: string;
     }) => Promise<{
-        product: ProductItem[];
+        product: {
+            count: number;
+            rows: ProductItem[];
+        };
         category: CategoryItem[];
     }>;
     getMembers: () => Promise<{

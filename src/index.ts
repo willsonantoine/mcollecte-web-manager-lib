@@ -16,6 +16,8 @@ import { ICreateAccount } from './utils/types/ICreateAccount';
 import { IUser } from "./utils/types/IUser";
 import { ILine } from "./utils/types/ILine";
 import { ICommande } from "./utils/types/ICommande";
+import { ICurrentProfil } from "./utils/types/ICurrentProfil";
+import { IProfilUpdate } from "./utils/types/IProfilUpdate";
 
 // If BlocText is meant to be public, export it too
 export { BlocText } from './utils/controllers/BlocText.controller';
@@ -354,6 +356,47 @@ export default class McollectWebManagerLib {
         }
     }
 
+    public getCurrentProfil = async (): Promise<{ data: ICurrentProfil | null, message: string, status: boolean }> => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'GET',
+                route: `/auth/get-profil`,
+                userToken: this.tokenUser
+            });
+            if (response.status) {
+                return { data: response.data, message: response.message, status: true };
+            } else {
+                console.error("Error getProfil:", response.message);
+                return { data: null, message: response.message, status: false };
+            }
+        } catch (error: any) {
+            console.error("Error getProfil:", error);
+            return { data: null, message: error.message, status: false };
+        }
+    }
+
+    public updateProfil = async (data: IProfilUpdate) => {
+        try {
+            const response = await HttpRequest({
+                api_url: this.apiUrl,
+                method: 'PUT',
+                route: `/auth/update-profil`,
+                userToken: this.tokenUser,
+                data: data
+            });
+            if (response.status) {
+                return { data: response.data, message: response.message, status: true };
+            } else {
+                console.error("Error getProfil:", response.message);
+                return { data: null, message: response.message, status: false };
+            }
+        } catch (error: any) {
+            console.error("Error getProfil:", error);
+            return { data: null, message: error.message, status: false };
+        }
+    }
+
 }
 
 
@@ -408,8 +451,8 @@ export const Test = async () => {
         // })
 
         // ----- Test get product
-        const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
-        console.log(result.product);
+        // const result = await cls.getProduct({ categoryId: '', search: '', subCategoryId: '' });
+        // console.log(result.product);
 
         // ----- Test get members
         // const { count, rows } = await cls.getMembers();
@@ -453,6 +496,17 @@ export const Test = async () => {
         //     const element = data[i];
         //     console.log('Commande:', element.lines);
         // }
+
+        // --------- Get Current Profil
+        const profil = await cls.getCurrentProfil();
+        console.log('Profil Name:', profil.data?.username);
+
+        // ---------- Update profil-----------
+        const updateProfil = await cls.updateProfil({
+            username: 'willson', oldPassword: '@Antoinewi7185', password: '@Antoinewi7185', confirmPassword: '@Antoinewi7185'
+        });
+
+        console.log(updateProfil)
 
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);

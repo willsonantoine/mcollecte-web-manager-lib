@@ -438,7 +438,7 @@ var McollectWebManagerLib = class {
         });
         return response.data;
       } catch (error) {
-        return { product: [], category: [] };
+        return { product: { count: 0, rows: [] }, category: [] };
       }
     };
     this.getMembers = async () => {
@@ -604,7 +604,6 @@ var Test = async () => {
     console.error("\n--- An error occurred during testing ---:", error);
   }
 };
-Test();
 export {
   BlocText,
   Test,
