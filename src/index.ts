@@ -35,6 +35,8 @@ export type { ICreateAccount } from './utils/types/ICreateAccount';
 export type { IUser } from './utils/types/IUser';
 export type { ILine } from './utils/types/ILine';
 export type { ICommande } from './utils/types/ICommande';
+export type { IProfilUpdate } from './utils/types/IProfilUpdate';
+export type { ICurrentProfil } from './utils/types/ICurrentProfil'
 
 export default class McollectWebManagerLib {
     // Keep bloc management if necessary
@@ -497,20 +499,20 @@ export const Test = async () => {
         //     console.log('Commande:', element.lines);
         // }
 
-        // --------- Get Current Profil
-        const profil = await cls.getCurrentProfil();
-        console.log('Profil Name:', profil.data?.username);
+        // // --------- Get Current Profil
+        // const profil = await cls.getCurrentProfil();
+        // console.log('Profil Name:', profil.data?.username);
 
-        // ---------- Update profil-----------
-        const updateProfil = await cls.updateProfil({
-            username: 'willson', oldPassword: '@Antoinewi7185', password: '@Antoinewi7185', confirmPassword: '@Antoinewi7185'
-        });
+        // // ---------- Update profil-----------
+        // const updateProfil = await cls.updateProfil({
+        //     username: 'willson', oldPassword: '@Antoinewi7185', password: '@Antoinewi7185', confirmPassword: '@Antoinewi7185'
+        // });
 
-        console.log(updateProfil)
+        // console.log(updateProfil)
 
     } catch (error) {
         console.error("\n--- An error occurred during testing ---:", error);
     }
 }
 
-Test();
+// Test();
